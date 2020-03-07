@@ -15,7 +15,7 @@ namespace SyntPolApi.DAL
         }
 
         public DbSet<Product> Products { get; set; }
-        public DbSet<Invoice> GetInvoices { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Provider> Providers { get; set; }
