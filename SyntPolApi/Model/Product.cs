@@ -12,7 +12,6 @@ namespace SyntPolApi.Model
         public int VAT { get; set; }
         public decimal NettoPrice { get; set; }
         public string Description { get; set; }
-        public string PhotoString { get; set; }
 
         public int ProviderId { get; set; }
         public Provider Provider { get; set; }
