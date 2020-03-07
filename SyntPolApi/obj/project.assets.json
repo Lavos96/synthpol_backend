@@ -4996,20 +4996,27 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\barte\\.nuget\\packages\\": {}
+    "C:\\Users\\Destruktor\\.nuget\\packages\\": {},
+    "C:\\Microsoft\\Xamarin\\NuGet\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\VisualProjects\\SyntPolApi\\SyntPolApi\\SyntPolApi.csproj",
+      "projectUniqueName": "E:\\Synthpol\\Backend\\synthpol_backend\\SyntPolApi\\SyntPolApi.csproj",
       "projectName": "SyntPolApi",
-      "projectPath": "D:\\VisualProjects\\SyntPolApi\\SyntPolApi\\SyntPolApi.csproj",
-      "packagesPath": "C:\\Users\\barte\\.nuget\\packages\\",
-      "outputPath": "D:\\VisualProjects\\SyntPolApi\\SyntPolApi\\obj\\",
+      "projectPath": "E:\\Synthpol\\Backend\\synthpol_backend\\SyntPolApi\\SyntPolApi.csproj",
+      "packagesPath": "C:\\Users\\Destruktor\\.nuget\\packages\\",
+      "outputPath": "E:\\Synthpol\\Backend\\synthpol_backend\\SyntPolApi\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Microsoft\\Xamarin\\NuGet\\",
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "C:\\Users\\barte\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\Destruktor\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
@@ -5065,7 +5072,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
       }
     }
   }
