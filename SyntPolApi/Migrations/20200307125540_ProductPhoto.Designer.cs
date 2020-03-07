@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SyntPolApi.DAL;
 
 namespace SyntPolApi.Migrations
 {
     [DbContext(typeof(SyntPolDbContext))]
-    partial class SyntPolDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200307125540_ProductPhoto")]
+    partial class ProductPhoto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
