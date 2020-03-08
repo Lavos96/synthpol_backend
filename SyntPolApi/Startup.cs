@@ -22,6 +22,8 @@ namespace SyntPolApi
         }
 
         public IConfiguration Configuration { get; }
+        //Nasze Zasady komunikacji Cors
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -30,6 +32,16 @@ namespace SyntPolApi
             services.AddDbContext<SyntPolDbContext>(x =>
             {
                 x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+            //Ustawiamy Corsa globalnie do wszystkich endpointów
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                builder =>
+                {
+                    //dodajemy zeby apka mogla sie komunkowac z frontem
+                    builder.WithOrigins("http://localhost:4200");
+                });
             });
         }
 
@@ -40,6 +52,8 @@ namespace SyntPolApi
             {
                 app.UseDeveloperExceptionPage();
             }
+            //Ustawiamy Corsa
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseRouting();
 
