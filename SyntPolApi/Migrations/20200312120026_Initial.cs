@@ -8,7 +8,20 @@ namespace SyntPolApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "GetInvoices",
+                name: "Categories",
+                columns: table => new
+                {
+                    CategoryId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CategoryName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Invoices",
                 columns: table => new
                 {
                     InvoiceId = table.Column<int>(nullable: false)
@@ -26,7 +39,7 @@ namespace SyntPolApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GetInvoices", x => x.InvoiceId);
+                    table.PrimaryKey("PK_Invoices", x => x.InvoiceId);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,9 +76,9 @@ namespace SyntPolApi.Migrations
                 {
                     table.PrimaryKey("PK_Orders", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_Orders_GetInvoices_InvoiceId",
+                        name: "FK_Orders_Invoices_InvoiceId",
                         column: x => x.InvoiceId,
-                        principalTable: "GetInvoices",
+                        principalTable: "Invoices",
                         principalColumn: "InvoiceId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -80,11 +93,19 @@ namespace SyntPolApi.Migrations
                     VAT = table.Column<int>(nullable: false),
                     NettoPrice = table.Column<decimal>(nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    ProviderId = table.Column<int>(nullable: false)
+                    PhotoString = table.Column<string>(nullable: true),
+                    ProviderId = table.Column<int>(nullable: false),
+                    CategoryId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.ProductId);
+                    table.ForeignKey(
+                        name: "FK_Products_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Products_Providers_ProviderId",
                         column: x => x.ProviderId,
@@ -138,6 +159,11 @@ namespace SyntPolApi.Migrations
                 column: "InvoiceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Products_CategoryId",
+                table: "Products",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_ProviderId",
                 table: "Products",
                 column: "ProviderId");
@@ -155,7 +181,10 @@ namespace SyntPolApi.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "GetInvoices");
+                name: "Invoices");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Providers");

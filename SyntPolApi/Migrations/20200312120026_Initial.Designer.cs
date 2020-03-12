@@ -10,7 +10,7 @@ using SyntPolApi.DAL;
 namespace SyntPolApi.Migrations
 {
     [DbContext(typeof(SyntPolDbContext))]
-    [Migration("20200306174309_Initial")]
+    [Migration("20200312120026_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,21 @@ namespace SyntPolApi.Migrations
                 .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("SyntPolApi.Model.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Categories");
+                });
 
             modelBuilder.Entity("SyntPolApi.Model.Invoice", b =>
                 {
@@ -60,7 +75,7 @@ namespace SyntPolApi.Migrations
 
                     b.HasKey("InvoiceId");
 
-                    b.ToTable("GetInvoices");
+                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("SyntPolApi.Model.Order", b =>
@@ -124,6 +139,9 @@ namespace SyntPolApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -133,6 +151,9 @@ namespace SyntPolApi.Migrations
                     b.Property<decimal>("NettoPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("PhotoString")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ProviderId")
                         .HasColumnType("int");
 
@@ -140,6 +161,8 @@ namespace SyntPolApi.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("ProviderId");
 
@@ -208,6 +231,12 @@ namespace SyntPolApi.Migrations
 
             modelBuilder.Entity("SyntPolApi.Model.Product", b =>
                 {
+                    b.HasOne("SyntPolApi.Model.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SyntPolApi.Model.Provider", "Provider")
                         .WithMany("Products")
                         .HasForeignKey("ProviderId")
