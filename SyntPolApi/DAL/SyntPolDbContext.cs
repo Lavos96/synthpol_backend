@@ -19,6 +19,7 @@ namespace SyntPolApi.DAL
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Provider> Providers { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
     }
 }
