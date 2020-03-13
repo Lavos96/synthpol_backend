@@ -80,6 +80,10 @@ namespace SyntPolApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
@@ -96,7 +100,9 @@ namespace SyntPolApi.Controllers
                 return NotFound();
             }
 
-            _context.Categories.Remove(category);
+            category.ShallDisplay = false;
+
+            await TryUpdateModelAsync(category);
             await _context.SaveChangesAsync();
 
             return category;

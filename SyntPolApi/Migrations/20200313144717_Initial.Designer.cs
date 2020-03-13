@@ -10,7 +10,7 @@ using SyntPolApi.DAL;
 namespace SyntPolApi.Migrations
 {
     [DbContext(typeof(SyntPolDbContext))]
-    [Migration("20200312120026_Initial")]
+    [Migration("20200313144717_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,9 @@ namespace SyntPolApi.Migrations
 
                     b.Property<string>("CategoryName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("ShallDisplay")
+                        .HasColumnType("bit");
 
                     b.HasKey("CategoryId");
 
@@ -85,14 +88,23 @@ namespace SyntPolApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("InvoiceId")
+                    b.Property<int?>("InvoiceId")
                         .HasColumnType("int");
 
                     b.Property<int>("OrderNumber")
                         .HasColumnType("int");
 
+                    b.Property<int>("OrderState")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("OrderValue")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("SellDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("ShallDisplay")
+                        .HasColumnType("bit");
 
                     b.HasKey("OrderId");
 
@@ -157,6 +169,9 @@ namespace SyntPolApi.Migrations
                     b.Property<int>("ProviderId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("ShallDisplay")
+                        .HasColumnType("bit");
+
                     b.Property<int>("VAT")
                         .HasColumnType("int");
 
@@ -194,6 +209,9 @@ namespace SyntPolApi.Migrations
                     b.Property<int>("ProviderNumber")
                         .HasColumnType("int");
 
+                    b.Property<bool>("ShallDisplay")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
@@ -207,11 +225,9 @@ namespace SyntPolApi.Migrations
 
             modelBuilder.Entity("SyntPolApi.Model.Order", b =>
                 {
-                    b.HasOne("SyntPolApi.Model.Invoice", "Invoice")
+                    b.HasOne("SyntPolApi.Model.Invoice", null)
                         .WithMany("Orders")
-                        .HasForeignKey("InvoiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("InvoiceId");
                 });
 
             modelBuilder.Entity("SyntPolApi.Model.OrderItem", b =>
@@ -223,7 +239,7 @@ namespace SyntPolApi.Migrations
                         .IsRequired();
 
                     b.HasOne("SyntPolApi.Model.Product", "Product")
-                        .WithMany("OrderItems")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

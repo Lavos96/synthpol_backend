@@ -12,50 +12,51 @@ namespace SyntPolApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProvidersController : ControllerBase
+    public class OrdersController : ControllerBase
     {
         private readonly SyntPolDbContext _context;
 
-        public ProvidersController(SyntPolDbContext context)
+        public OrdersController(SyntPolDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Providers
+        // GET: api/Orders
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Provider>>> GetProviders()
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            return await _context.Providers
-                .Include(prod => prod.Products)
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(p => p.Product)
                 .ToListAsync();
         }
 
-        // GET: api/Providers/5
+        // GET: api/Orders/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Provider>> GetProvider(int id)
+        public async Task<ActionResult<Order>> GetOrder(int id)
         {
-            var provider = await _context.Providers.FindAsync(id);
+            var order = await _context.Orders.FindAsync(id);
 
-            if (provider == null)
+            if (order == null)
             {
                 return NotFound();
             }
 
-            return provider;
+            return order;
         }
 
-        // PUT: api/Providers/5
+        // PUT: api/Orders/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProvider(int id, Provider provider)
+        public async Task<IActionResult> PutOrder(int id, Order order)
         {
-            if (id != provider.ProviderId)
+            if (id != order.OrderId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(provider).State = EntityState.Modified;
+            _context.Entry(order).State = EntityState.Modified;
 
             try
             {
@@ -63,7 +64,7 @@ namespace SyntPolApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProviderExists(id))
+                if (!OrderExists(id))
                 {
                     return NotFound();
                 }
@@ -76,43 +77,37 @@ namespace SyntPolApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Providers
+        // POST: api/Orders
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Provider>> PostProvider(Provider provider)
+        public async Task<ActionResult<Order>> PostOrder(Order order)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            _context.Providers.Add(provider);
+            _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProvider", new { id = provider.ProviderId }, provider);
+            return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
         }
 
-        // DELETE: api/Providers/5
+        // DELETE: api/Orders/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Provider>> DeleteProvider(int id)
+        public async Task<ActionResult<Order>> DeleteOrder(int id)
         {
-            var provider = await _context.Providers.FindAsync(id);
-            if (provider == null)
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
             {
                 return NotFound();
             }
 
-            provider.ShallDisplay = false;
-
-            await TryUpdateModelAsync(provider);
+            _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
 
-            return provider;
+            return order;
         }
 
-        private bool ProviderExists(int id)
+        private bool OrderExists(int id)
         {
-            return _context.Providers.Any(e => e.ProviderId == id);
+            return _context.Orders.Any(e => e.OrderId == id);
         }
     }
 }

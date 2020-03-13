@@ -25,6 +25,13 @@ namespace SyntPolApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
+            return await _context.Products.Where(p => p.ShallDisplay).ToListAsync();
+        }
+
+        // GET: api/Products/all
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
+        {
             return await _context.Products.ToListAsync();
         }
 
@@ -58,6 +65,7 @@ namespace SyntPolApi.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                return Ok();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -70,8 +78,6 @@ namespace SyntPolApi.Controllers
                     throw;
                 }
             }
-
-            return NoContent();
         }
 
         // POST: api/Products
@@ -80,6 +86,10 @@ namespace SyntPolApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
@@ -96,7 +106,8 @@ namespace SyntPolApi.Controllers
                 return NotFound();
             }
 
-            _context.Products.Remove(product);
+            product.ShallDisplay = false;
+            await TryUpdateModelAsync(product);
             await _context.SaveChangesAsync();
 
             return product;
