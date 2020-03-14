@@ -26,13 +26,35 @@ namespace SyntPolApi.Controllers
         public async Task<ActionResult<IEnumerable<Provider>>> GetProviders()
         {
             return await _context.Providers
-                .Include(prod => prod.Products)
+                .Where(s => s.ShallDisplay)
+                .ToListAsync();
+        }
+
+        // GET: api/Providers
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<Provider>>> GetAllProviders()
+        {
+            return await _context.Providers
                 .ToListAsync();
         }
 
         // GET: api/Providers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Provider>> GetProvider(int id)
+        {
+            var provider = await _context.Providers.FindAsync(id);
+
+            if (provider == null || !provider.ShallDisplay)
+            {
+                return NotFound();
+            }
+
+            return provider;
+        }
+
+        // GET: api/Providers/5
+        [HttpGet("all/{id}")]
+        public async Task<ActionResult<Provider>> GetDeletedProvider(int id)
         {
             var provider = await _context.Providers.FindAsync(id);
 
@@ -60,6 +82,7 @@ namespace SyntPolApi.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                return Ok();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -72,8 +95,6 @@ namespace SyntPolApi.Controllers
                     throw;
                 }
             }
-
-            return NoContent();
         }
 
         // POST: api/Providers
@@ -82,6 +103,10 @@ namespace SyntPolApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Provider>> PostProvider(Provider provider)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             _context.Providers.Add(provider);
             await _context.SaveChangesAsync();
 
@@ -98,7 +123,9 @@ namespace SyntPolApi.Controllers
                 return NotFound();
             }
 
-            _context.Providers.Remove(provider);
+            provider.ShallDisplay = false;
+
+            await TryUpdateModelAsync(provider);
             await _context.SaveChangesAsync();
 
             return provider;

@@ -25,12 +25,36 @@ namespace SyntPolApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories
+                .Where(s => s.ShallDisplay)
+                .ToListAsync();
+        }
+
+        // GET: api/Categories/all
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories()
+        {
+            return await _context.Categories
+                .ToListAsync();
         }
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
+        {
+            var category = await _context.Categories.FindAsync(id);
+
+            if (category == null || !category.ShallDisplay)
+            {
+                return NotFound();
+            }
+
+            return category;
+        }
+
+        // GET: api/Categories/5
+        [HttpGet("all/{id}")]
+        public async Task<ActionResult<Category>> GetDeletedCategory(int id)
         {
             var category = await _context.Categories.FindAsync(id);
 
@@ -58,6 +82,7 @@ namespace SyntPolApi.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                return Ok();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -70,8 +95,6 @@ namespace SyntPolApi.Controllers
                     throw;
                 }
             }
-
-            return NoContent();
         }
 
         // POST: api/Categories
@@ -80,6 +103,10 @@ namespace SyntPolApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
@@ -96,7 +123,9 @@ namespace SyntPolApi.Controllers
                 return NotFound();
             }
 
-            _context.Categories.Remove(category);
+            category.ShallDisplay = false;
+
+            await TryUpdateModelAsync(category);
             await _context.SaveChangesAsync();
 
             return category;

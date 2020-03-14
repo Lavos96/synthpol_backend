@@ -13,7 +13,8 @@ namespace SyntPolApi.Migrations
                 {
                     CategoryId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(nullable: true)
+                    CategoryName = table.Column<string>(nullable: true),
+                    ShallDisplay = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,7 +56,8 @@ namespace SyntPolApi.Migrations
                     HomeNumber = table.Column<int>(nullable: false),
                     ZipCode = table.Column<string>(nullable: true),
                     City = table.Column<string>(nullable: true),
-                    NIP = table.Column<string>(nullable: true)
+                    NIP = table.Column<string>(nullable: true),
+                    ShallDisplay = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,7 +72,10 @@ namespace SyntPolApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderNumber = table.Column<int>(nullable: false),
                     SellDate = table.Column<DateTime>(nullable: false),
-                    InvoiceId = table.Column<int>(nullable: false)
+                    OrderValue = table.Column<decimal>(nullable: false),
+                    OrderState = table.Column<int>(nullable: false),
+                    ShallDisplay = table.Column<bool>(nullable: false),
+                    InvoiceId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -80,7 +85,7 @@ namespace SyntPolApi.Migrations
                         column: x => x.InvoiceId,
                         principalTable: "Invoices",
                         principalColumn: "InvoiceId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -94,6 +99,7 @@ namespace SyntPolApi.Migrations
                     NettoPrice = table.Column<decimal>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     PhotoString = table.Column<string>(nullable: true),
+                    ShallDisplay = table.Column<bool>(nullable: false),
                     ProviderId = table.Column<int>(nullable: false),
                     CategoryId = table.Column<int>(nullable: false)
                 },
