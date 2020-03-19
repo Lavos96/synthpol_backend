@@ -16,5 +16,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SyntPolApi.Core\SyntPolApi.Core.csproj" />
+    <ProjectReference Include="..\SyntPolApi.Services\SyntPolApi.Services.csproj" />
+  </ItemGroup>
+
 
 </Project>

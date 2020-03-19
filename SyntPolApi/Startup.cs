@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SyntPolApi.Core;
 using SyntPolApi.DAL;
 
 namespace SyntPolApi
@@ -43,6 +44,7 @@ namespace SyntPolApi
                     builder.WithOrigins("http://localhost:4200");
                 });
             });
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

@@ -3,7 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntPolApi", "SyntPolApi\SyntPolApi.csproj", "{4A339DBF-D892-4324-ABFE-8D33A41A44FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyntPolApi", "SyntPolApi\SyntPolApi.csproj", "{4A339DBF-D892-4324-ABFE-8D33A41A44FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntPolApi.Core", "SyntPolApi.Core\SyntPolApi.Core.csproj", "{AC9D6F5D-EDE3-46C5-855E-D342ADAD22C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntPolApi.DAL", "SyntPolApi.DAL\SyntPolApi.DAL.csproj", "{04D7708E-94B9-47C6-AE9B-5D52FF899F4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntPolApi.Services", "SyntPolApi.Services\SyntPolApi.Services.csproj", "{F3B3B150-DC59-4463-BB4C-A9A2A8A1C8B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB80CC13-54FB-409B-8EA1-1D378293DBEE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +26,18 @@ Global
 		{4A339DBF-D892-4324-ABFE-8D33A41A44FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A339DBF-D892-4324-ABFE-8D33A41A44FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A339DBF-D892-4324-ABFE-8D33A41A44FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC9D6F5D-EDE3-46C5-855E-D342ADAD22C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC9D6F5D-EDE3-46C5-855E-D342ADAD22C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC9D6F5D-EDE3-46C5-855E-D342ADAD22C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC9D6F5D-EDE3-46C5-855E-D342ADAD22C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04D7708E-94B9-47C6-AE9B-5D52FF899F4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04D7708E-94B9-47C6-AE9B-5D52FF899F4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04D7708E-94B9-47C6-AE9B-5D52FF899F4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04D7708E-94B9-47C6-AE9B-5D52FF899F4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3B3B150-DC59-4463-BB4C-A9A2A8A1C8B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3B3B150-DC59-4463-BB4C-A9A2A8A1C8B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3B3B150-DC59-4463-BB4C-A9A2A8A1C8B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3B3B150-DC59-4463-BB4C-A9A2A8A1C8B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
