@@ -42,10 +42,5 @@ namespace SyntPolApi.DAL.Repositories
         {
             return await Context.Set<TEntity>().FindAsync(id);
         }
-
-        public void Remove(TEntity entity)
-        {
-            Context.Set<TEntity>().Remove(entity);
-        }
     }
 }

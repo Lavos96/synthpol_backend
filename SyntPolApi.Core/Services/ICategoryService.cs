@@ -10,7 +10,7 @@ namespace SyntPolApi.Core.Services
     {
         Task<Category> CreateCategory(Category category);
         Task UpdateCategory(Category categoryToBeUpdated, Category category);
-        Task DeleteCategory(Category category);
+        Task DeleteCategory(int id);
 
         //"standard" GetAll (ShallDisplay == true)
         Task<IEnumerable<Category>> GetAsync();

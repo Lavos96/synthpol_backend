@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace SyntPolApi.Migrations
+namespace SyntPolApi.DAL.Migrations
 {
     public partial class Initial : Migration
     {
@@ -13,7 +13,7 @@ namespace SyntPolApi.Migrations
                 {
                     CategoryId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(nullable: true),
+                    CategoryName = table.Column<string>(nullable: false),
                     ShallDisplay = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -50,13 +50,13 @@ namespace SyntPolApi.Migrations
                     ProviderId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProviderNumber = table.Column<int>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
-                    Street = table.Column<string>(nullable: true),
+                    FirstName = table.Column<string>(nullable: false),
+                    LastName = table.Column<string>(nullable: false),
+                    Street = table.Column<string>(nullable: false),
                     HomeNumber = table.Column<int>(nullable: false),
-                    ZipCode = table.Column<string>(nullable: true),
-                    City = table.Column<string>(nullable: true),
-                    NIP = table.Column<string>(nullable: true),
+                    ZipCode = table.Column<string>(nullable: false),
+                    City = table.Column<string>(nullable: false),
+                    NIP = table.Column<string>(nullable: false),
                     ShallDisplay = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -94,11 +94,11 @@ namespace SyntPolApi.Migrations
                 {
                     ProductId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                     VAT = table.Column<int>(nullable: false),
-                    NettoPrice = table.Column<decimal>(nullable: false),
+                    NettoPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    PhotoString = table.Column<string>(nullable: true),
+                    PhotoString = table.Column<string>(nullable: false),
                     ShallDisplay = table.Column<bool>(nullable: false),
                     ProviderId = table.Column<int>(nullable: false),
                     CategoryId = table.Column<int>(nullable: false)

@@ -13,5 +13,7 @@ namespace SyntPolApi.Core.Repositories
         Task<IEnumerable<Provider>> GetAsync();
         ValueTask<Provider> GetByIdAsync(int id);
 
+        //remove does not actually remove (updates ShallDisplay to false instead)
+        void Remove(int id);
     }
 }

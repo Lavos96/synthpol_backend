@@ -10,7 +10,7 @@ namespace SyntPolApi.Core.Services
     {
         Task<Provider> CreateProvider(Provider provider);
         Task UpdateProvider(Provider providerToBeUpdated, Provider provider);
-        Task DeleteProvider(Provider provider);
+        Task DeleteProvider(int id);
 
         //"standard" GetAll (ShallDisplay == true)
         Task<IEnumerable<Provider>> GetAsync();

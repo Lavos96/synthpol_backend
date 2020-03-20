@@ -19,24 +19,28 @@ namespace SyntPolApi.DAL.Repositories
             syntPolApiDbContext = context;
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsWithCategoryAndProviderAsync()
+        public async Task<IEnumerable<Product>> GetAllProductsByCategoryAndProviderAsync(int catId, int provId)
         {
             return await syntPolApiDbContext.Products
+                .Where(p => p.CategoryId == catId)
                 .Include(p => p.Category)
+                .Where(p => p.ProviderId == provId)
                 .Include(p =>p.Provider)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsWithCategoryAsync()
+        public async Task<IEnumerable<Product>> GetAllProductsByCategoryAsync(int catId)
         {
             return await syntPolApiDbContext.Products
+                .Where(p => p.CategoryId == catId)
                 .Include(p => p.Category)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsWithProviderAsync()
+        public async Task<IEnumerable<Product>> GetAllProductsByProviderAsync(int provId)
         {
             return await syntPolApiDbContext.Products
+                .Where(p => p.ProviderId == provId)
                 .Include(p => p.Provider)
                 .ToListAsync();
         }
@@ -55,29 +59,39 @@ namespace SyntPolApi.DAL.Repositories
                 .FirstOrDefaultAsync(p => p.ProductId == id);
         }
 
-        public async Task<IEnumerable<Product>> GetProductsWithCategoryAndProviderAsync()
+        public async Task<IEnumerable<Product>> GetProductsByCategoryAndProviderAsync(int catId, int provId)
         {
             return await syntPolApiDbContext.Products
                 .Where(p => p.ShallDisplay)
+                .Where(p => p.CategoryId == catId)
                 .Include(p => p.Category)
+                .Where(p => p.ProviderId == provId)
                 .Include(p => p.Provider)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProductsWithCategoryAsync()
+        public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int catId)
         {
             return await syntPolApiDbContext.Products
                 .Where(p => p.ShallDisplay)
+                .Where(p => p.CategoryId == catId)
                 .Include(p => p.Category)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProductsWithProviderAsync()
+        public async Task<IEnumerable<Product>> GetProductsByProviderAsync(int provId)
         {
             return await syntPolApiDbContext.Products
                 .Where(p => p.ShallDisplay)
+                .Where(p => p.ProviderId == provId)
                 .Include(p => p.Provider)
                 .ToListAsync();
+        }
+
+        public async void Remove(int id)
+        {
+            var product = await syntPolApiDbContext.Products.FirstOrDefaultAsync(pr => pr.ProductId == id);
+            product.ShallDisplay = false;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace SyntPolApi
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<SyntPolDbContext>();
+                    var context = services.GetRequiredService<SyntPolApiDbContext>();
                     SeedData.Initialize(context);
                 }
                 catch (Exception ex)

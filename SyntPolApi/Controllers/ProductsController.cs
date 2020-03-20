@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SyntPolApi.Core.DTOs;
+using SyntPolApi.Core.Models;
+using SyntPolApi.Core.Services;
 using SyntPolApi.DAL;
-using SyntPolApi.Model;
 
 namespace SyntPolApi.Controllers
 {
@@ -14,205 +17,135 @@ namespace SyntPolApi.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly SyntPolDbContext _context;
+        private readonly IProductService productService;
+        private readonly IMapper mapper;
 
-        public ProductsController(SyntPolDbContext context)
+        public ProductsController(IProductService service, IMapper mapper)
         {
-            _context = context;
+            productService = service;
+            this.mapper = mapper;
         }
-
 
         // GET: api/Products/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-
-            if (product == null || !product.ShallDisplay)
+            if (id == 0)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            return product;
-        }
-
-        // GET: api/Products/5
-        [HttpGet("all/{id}")]
-        public async Task<ActionResult<Product>> GetDeletedProduct(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
+            var product = await productService.GetByIdAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            return product;
+            return Ok(product);
+        }
+
+        // GET: api/Products/5
+        [HttpGet("all/{id}")]
+        public async Task<ActionResult<Product>> GetDeletedProduct(int id)
+        {
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+
+            var product = await productService.GetDeletedByIdAsync(id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(product);
         }
 
         // GET: api/products
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            return await _context.Products.Where(p => p.ShallDisplay).ToListAsync();
+            var products = await productService.GetAsync();
+            if (products == null)
+            {
+                return NotFound();
+            }
+            return Ok(products);
         }
 
         // GET: api/products/category/{id}
-        [HttpGet("category/{id}")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProductsFromCategory(int id)
+        [HttpGet("category/{catId}")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductsFromCategory(int catId)
         {
-            List<Product> products = await _context.Products
-                .Where(s => s.ShallDisplay)
-                .Where(c => c.CategoryId == id)
-                .Select(p => new Product() 
-                { 
-                    ProductId = p.ProductId,
-                    Name = p.Name,
-                    VAT = p.VAT,
-                    NettoPrice = p.NettoPrice,
-                    Description = p.Description,
-                    PhotoString = p.PhotoString,
-                    ShallDisplay = p.ShallDisplay,
-                    ProviderId = p.ProviderId,
-                    CategoryId = p.CategoryId,
-                    Category = p.Category
-                })
-                .ToListAsync();
+            var products = await productService.GetProductsByCategoryAsync(catId);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
 
-            return products;
+            return Ok(mappedProducts);
         }
 
         // GET: api/products/provider/{id}
-        [HttpGet("provider/{id}")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProductsFromProvider(int id)
+        [HttpGet("provider/{provId}")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductsFromProvider(int provId)
         {
-            var products = await _context.Products
-                .Where(s => s.ShallDisplay)
-                .Where(prov => prov.ProviderId == id)
-                .Select(p => new Product()
-                {
-                    ProductId = p.ProductId,
-                    Name = p.Name,
-                    VAT = p.VAT,
-                    NettoPrice = p.NettoPrice,
-                    Description = p.Description,
-                    PhotoString = p.PhotoString,
-                    ShallDisplay = p.ShallDisplay,
-                    ProviderId = p.ProviderId,
-                    Provider = p.Provider,
-                    CategoryId = p.CategoryId,
-                })
-                .ToListAsync();
+            var products = await productService.GetProductsByProviderAsync(provId);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
 
-            return products;
+            return Ok(mappedProducts);
         }
 
         // GET: api/products/category/{catId}/provider/{provId}
         [HttpGet("category/{catId}/provider/{provId}")]
         public async Task<ActionResult<IEnumerable<Product>>> GetProductsFromCategoryAndProvider(int catId, int provId)
         {
-            var products = await _context.Products
-                .Where(s => s.ShallDisplay)
-                .Where(c => c.CategoryId == catId)
-                .Where(prov => prov.ProviderId == provId)
-                .Select(p => new Product()
-                {
-                    ProductId = p.ProductId,
-                    Name = p.Name,
-                    VAT = p.VAT,
-                    NettoPrice = p.NettoPrice,
-                    Description = p.Description,
-                    PhotoString = p.PhotoString,
-                    ShallDisplay = p.ShallDisplay,
-                    ProviderId = p.ProviderId,
-                    Provider = p.Provider,
-                    CategoryId = p.CategoryId,
-                    Category = p.Category
-                })
-                .ToListAsync();
+            var products = await productService.GetProductsByCategoryAndProviderAsync(catId, provId);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
 
-            return products;
+            return Ok(mappedProducts);
         }
 
         // GET: api/products/all
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
         {
-            return await _context.Products.ToListAsync();
+            var products = await productService.GetAllAsync();
+            if (products == null)
+            {
+                return NotFound();
+            }
+            return Ok(products);
         }
 
         // GET: api/products/all/category/{id}
-        [HttpGet("all/category/{id}")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsFromCategory(int id)
+        [HttpGet("all/category/{catId}")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsFromCategory(int catId)
         {
-            List<Product> products = await _context.Products
-                .Where(c => c.CategoryId == id)
-                .Select(p => new Product()
-                {
-                    ProductId = p.ProductId,
-                    Name = p.Name,
-                    VAT = p.VAT,
-                    NettoPrice = p.NettoPrice,
-                    Description = p.Description,
-                    PhotoString = p.PhotoString,
-                    ShallDisplay = p.ShallDisplay,
-                    ProviderId = p.ProviderId,
-                    CategoryId = p.CategoryId,
-                    Category = p.Category
-                })
-                .ToListAsync();
+            var products = await productService.GetAllProductsByCategoryAsync(catId);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
 
-            return products;
+            return Ok(mappedProducts);
         }
 
         // GET: api/products/all/provider/{id}
-        [HttpGet("all/provider/{id}")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsFromProvider(int id)
+        [HttpGet("all/provider/{provId}")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsFromProvider(int provId)
         {
-            var products = await _context.Products
-                .Where(prov => prov.ProviderId == id)
-                .Select(p => new Product()
-                {
-                    ProductId = p.ProductId,
-                    Name = p.Name,
-                    VAT = p.VAT,
-                    NettoPrice = p.NettoPrice,
-                    Description = p.Description,
-                    PhotoString = p.PhotoString,
-                    ShallDisplay = p.ShallDisplay,
-                    ProviderId = p.ProviderId,
-                    Provider = p.Provider,
-                    CategoryId = p.CategoryId,
-                })
-                .ToListAsync();
+            var products = await productService.GetAllProductsByProviderAsync(provId);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
 
-            return products;
+            return Ok(mappedProducts);
         }
 
         // GET: api/products/all/category/{catId}/provider/{provId}
         [HttpGet("all/category/{catId}/provider/{provId}")]
         public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsFromCategoryAndProvider(int catId, int provId)
         {
-            var products = await _context.Products
-                .Where(c => c.CategoryId == catId)
-                .Where(prov => prov.ProviderId == provId)
-                .Select(p => new Product()
-                {
-                    ProductId = p.ProductId,
-                    Name = p.Name,
-                    VAT = p.VAT,
-                    NettoPrice = p.NettoPrice,
-                    Description = p.Description,
-                    PhotoString = p.PhotoString,
-                    ShallDisplay = p.ShallDisplay,
-                    ProviderId = p.ProviderId,
-                    Provider = p.Provider,
-                    CategoryId = p.CategoryId,
-                    Category = p.Category
-                })
-                .ToListAsync();
+            var products = await productService.GetAllProductsByCategoryAndProviderAsync(catId, provId);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
 
-            return products;
+            return Ok(mappedProducts);
         }
 
         // PUT: api/Products/5
@@ -221,43 +154,34 @@ namespace SyntPolApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
-            if (id != product.ProductId)
+            if (id != product.ProductId || id == 0)
             {
                 return BadRequest();
             }
 
-            _context.Entry(product).State = EntityState.Modified;
+            var productToBeUpdated = await productService.GetDeletedByIdAsync(id);
 
-            try
+            if (productToBeUpdated == null)
             {
-                await _context.SaveChangesAsync();
-                return Ok();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await productService.UpdateProduct(productToBeUpdated, product);
+
+            var newProduct = await productService.GetDeletedByIdAsync(id);
+            return Ok(newProduct);
         }
-        
+
         // POST: api/Products
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            await productService.CreateProduct(product);
 
             return CreatedAtAction("GetProduct", new { id = product.ProductId }, product);
         }
@@ -266,22 +190,20 @@ namespace SyntPolApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Product>> DeleteProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+
+            var productToBeDeleted = await productService.GetDeletedByIdAsync(id);
+
+            if (productToBeDeleted == null)
             {
                 return NotFound();
             }
+            await productService.DeleteProduct(id);
 
-            product.ShallDisplay = false;
-            await TryUpdateModelAsync(product);
-            await _context.SaveChangesAsync();
-
-            return product;
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.ProductId == id);
+            return NoContent();
         }
     }
 }

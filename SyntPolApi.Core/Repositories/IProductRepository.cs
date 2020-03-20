@@ -14,13 +14,16 @@ namespace SyntPolApi.Core.Repositories
         ValueTask<Product> GetByIdAsync(int id);
 
         //"standard" GetAllWith (ShallDisplay == true)
-        Task<IEnumerable<Product>> GetProductsWithProviderAsync();
-        Task<IEnumerable<Product>> GetProductsWithCategoryAsync();
-        Task<IEnumerable<Product>> GetProductsWithCategoryAndProviderAsync();
+        Task<IEnumerable<Product>> GetProductsByProviderAsync(int provId);
+        Task<IEnumerable<Product>> GetProductsByCategoryAsync(int catId);
+        Task<IEnumerable<Product>> GetProductsByCategoryAndProviderAsync(int catId, int provId);
 
         //full GetAllWith (including those with flag ShallDisplay set to false)
-        Task<IEnumerable<Product>> GetAllProductsWithProviderAsync();
-        Task<IEnumerable<Product>> GetAllProductsWithCategoryAsync();
-        Task<IEnumerable<Product>> GetAllProductsWithCategoryAndProviderAsync();
+        Task<IEnumerable<Product>> GetAllProductsByProviderAsync(int provId);
+        Task<IEnumerable<Product>> GetAllProductsByCategoryAsync(int catId);
+        Task<IEnumerable<Product>> GetAllProductsByCategoryAndProviderAsync(int catId, int provId);
+
+        //remove does not actually remove (updates ShallDisplay to false instead)
+        void Remove(int id);
     }
 }

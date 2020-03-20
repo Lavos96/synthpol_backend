@@ -24,5 +24,11 @@ namespace SyntPolApi.DAL.Repositories
         {
             return await syntPolApiDbContext.Categories.Where(p => p.ShallDisplay).FirstOrDefaultAsync(p => p.CategoryId == id);
         }
+
+        public async void Remove(int id)
+        {
+            var category = await syntPolApiDbContext.Categories.FirstOrDefaultAsync(cat => cat.CategoryId == id);
+            category.ShallDisplay = false;
+        }
     }
 }

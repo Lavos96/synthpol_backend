@@ -12,5 +12,8 @@ namespace SyntPolApi.Core.Repositories
         //full GetAll (including those with flag ShallDisplay set to false) is located in base repository (IRepository.cs)
         Task<IEnumerable<Category>> GetAsync();
         ValueTask<Category> GetByIdAsync(int id);
+
+        //remove does not actually remove (updates ShallDisplay to false instead)
+        void Remove(int id);
     }
 }

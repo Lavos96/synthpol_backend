@@ -6,84 +6,64 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SyntPolApi.Core.Models;
-using SyntPolApi.Core.Services;
 using SyntPolApi.DAL;
 
 namespace SyntPolApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProvidersController : ControllerBase
+    public class ProvidersControllerOld : ControllerBase
     {
-        private readonly IProviderService providerService;
+        private readonly SyntPolApiDbContext _context;
 
-        public ProvidersController(IProviderService service)
+        public ProvidersControllerOld(SyntPolApiDbContext context)
         {
-            providerService = service;
+            _context = context;
         }
 
         // GET: api/Providers
-        [HttpGet("")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Provider>>> GetProviders()
         {
-            var providers = await providerService.GetAsync();
-            if (providers == null)
-            {
-                return NotFound();
-            }
-            return Ok(providers);
+            return await _context.Providers
+                .Where(s => s.ShallDisplay)
+                .ToListAsync();
         }
 
         // GET: api/Providers
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<Provider>>> GetAllProviders()
         {
-            var providers = await providerService.GetAllAsync();
-
-            if (providers == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(providers);
+            return await _context.Providers
+                .ToListAsync();
         }
 
         // GET: api/Providers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Provider>> GetProvider(int id)
         {
-            if (id == 0)
-            {
-                return BadRequest();
-            }
+            var provider = await _context.Providers.FindAsync(id);
 
-            var provider = await providerService.GetByIdAsync(id);
-
-            if (provider == null)
+            if (provider == null || !provider.ShallDisplay)
             {
                 return NotFound();
             }
 
-            return Ok(provider);
+            return provider;
         }
 
         // GET: api/Providers/5
         [HttpGet("all/{id}")]
         public async Task<ActionResult<Provider>> GetDeletedProvider(int id)
         {
-            if (id == 0)
-            {
-                return BadRequest();
-            }
-
-            var provider = await providerService.GetDeletedByIdAsync(id);
+            var provider = await _context.Providers.FindAsync(id);
 
             if (provider == null)
             {
                 return NotFound();
             }
 
-            return Ok(provider);
+            return provider;
         }
 
         // PUT: api/Providers/5
@@ -92,21 +72,29 @@ namespace SyntPolApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProvider(int id, Provider provider)
         {
-            if (id != provider.ProviderId || id == 0)
+            if (id != provider.ProviderId)
             {
                 return BadRequest();
             }
 
-            var providerToBeUpdated = await providerService.GetDeletedByIdAsync(id);
+            _context.Entry(provider).State = EntityState.Modified;
 
-            if (providerToBeUpdated == null)
+            try
             {
-                return NotFound();
+                await _context.SaveChangesAsync();
+                return Ok();
             }
-            await providerService.UpdateProvider(providerToBeUpdated, provider);
-
-            var newProvider = await providerService.GetDeletedByIdAsync(id);
-            return Ok(newProvider);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProviderExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         // POST: api/Providers
@@ -119,7 +107,8 @@ namespace SyntPolApi.Controllers
             {
                 return BadRequest();
             }
-            await providerService.CreateProvider(provider);
+            _context.Providers.Add(provider);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetProvider", new { id = provider.ProviderId }, provider);
         }
@@ -128,20 +117,23 @@ namespace SyntPolApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Provider>> DeleteProvider(int id)
         {
-            if (id == 0)
-            {
-                return BadRequest();
-            }
-
-            var providerToBeDeleted = await providerService.GetDeletedByIdAsync(id);
-
-            if (providerToBeDeleted == null)
+            var provider = await _context.Providers.FindAsync(id);
+            if (provider == null)
             {
                 return NotFound();
             }
-            await providerService.DeleteProvider(id);
 
-            return NoContent();
+            provider.ShallDisplay = false;
+
+            await TryUpdateModelAsync(provider);
+            await _context.SaveChangesAsync();
+
+            return provider;
+        }
+
+        private bool ProviderExists(int id)
+        {
+            return _context.Providers.Any(e => e.ProviderId == id);
         }
     }
 }

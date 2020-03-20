@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SyntPolApi.Core.Models;
 using SyntPolApi.DAL;
-using SyntPolApi.Model;
 
 namespace SyntPolApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrdersControllerOld : ControllerBase
     {
-        private readonly SyntPolDbContext _context;
+        private readonly SyntPolApiDbContext _context;
 
-        public OrdersController(SyntPolDbContext context)
+        public OrdersControllerOld(SyntPolApiDbContext context)
         {
             _context = context;
         }

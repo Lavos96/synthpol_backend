@@ -13,6 +13,5 @@ namespace SyntPolApi.Core.Repositories
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
         Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
         Task AddAsync(TEntity entity);
-        void Remove(TEntity entity);
     }
 }

@@ -10,7 +10,7 @@ namespace SyntPolApi.Core.Services
     {
         Task<Product> CreateProduct(Product product);
         Task UpdateProduct(Product productToBeUpdated, Product product);
-        Task DeleteProduct(Product product);
+        Task DeleteProduct(int id);
 
         //"standard" GetAll (ShallDisplay == true)
         Task<IEnumerable<Product>> GetAsync();
@@ -22,13 +22,13 @@ namespace SyntPolApi.Core.Services
 
 
         //"standard" GetAllWith (ShallDisplay == true)
-        Task<IEnumerable<Product>> GetProductsWithProviderAsync();
-        Task<IEnumerable<Product>> GetProductsWithCategoryAsync();
-        Task<IEnumerable<Product>> GetProductsWithCategoryAndProviderAsync();
+        Task<IEnumerable<Product>> GetProductsByProviderAsync(int provId);
+        Task<IEnumerable<Product>> GetProductsByCategoryAsync(int catId);
+        Task<IEnumerable<Product>> GetProductsByCategoryAndProviderAsync(int catId, int provId);
 
         //full GetAllWith (including those with flag ShallDisplay set to false)
-        Task<IEnumerable<Product>> GetAllProductsWithProviderAsync();
-        Task<IEnumerable<Product>> GetAllProductsWithCategoryAsync();
-        Task<IEnumerable<Product>> GetAllProductsWithCategoryAndProviderAsync();
+        Task<IEnumerable<Product>> GetAllProductsByProviderAsync(int provId);
+        Task<IEnumerable<Product>> GetAllProductsByCategoryAsync(int catId);
+        Task<IEnumerable<Product>> GetAllProductsByCategoryAndProviderAsync(int catId, int provId);
     }
 }
