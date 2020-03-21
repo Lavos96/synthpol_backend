@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SyntPolApi.Core.DTOs;
 using SyntPolApi.Core.Models;
 using SyntPolApi.Core.Services;
 using SyntPolApi.DAL;
@@ -16,10 +18,12 @@ namespace SyntPolApi.Controllers
     public class ProvidersController : ControllerBase
     {
         private readonly IProviderService providerService;
+        private readonly IMapper mapper;
 
-        public ProvidersController(IProviderService service)
+        public ProvidersController(IProviderService service, IMapper mapper)
         {
             providerService = service;
+            this.mapper = mapper;
         }
 
         // GET: api/Providers
@@ -90,9 +94,9 @@ namespace SyntPolApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProvider(int id, Provider provider)
+        public async Task<IActionResult> PutProvider(int id, [FromBody]PostProviderDTO provider)
         {
-            if (id != provider.ProviderId || id == 0)
+            if (id == 0)
             {
                 return BadRequest();
             }
@@ -103,7 +107,8 @@ namespace SyntPolApi.Controllers
             {
                 return NotFound();
             }
-            await providerService.UpdateProvider(providerToBeUpdated, provider);
+            var mappedProvider = mapper.Map<PostProviderDTO, Provider>(provider);
+            await providerService.UpdateProvider(providerToBeUpdated, mappedProvider);
 
             var newProvider = await providerService.GetDeletedByIdAsync(id);
             return Ok(newProvider);
@@ -113,15 +118,16 @@ namespace SyntPolApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Provider>> PostProvider(Provider provider)
+        public async Task<ActionResult<Provider>> PostProvider([FromBody] PostProviderDTO provider)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            await providerService.CreateProvider(provider);
+            var mappedProvider = mapper.Map<PostProviderDTO, Provider>(provider);
+            await providerService.CreateProvider(mappedProvider);
 
-            return CreatedAtAction("GetProvider", new { id = provider.ProviderId }, provider);
+            return Ok();
         }
 
         // DELETE: api/Providers/5

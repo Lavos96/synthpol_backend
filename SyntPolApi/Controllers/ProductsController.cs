@@ -78,30 +78,30 @@ namespace SyntPolApi.Controllers
 
         // GET: api/products/category/{id}
         [HttpGet("category/{catId}")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProductsFromCategory(int catId)
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductsByCategoryAsync(int catId)
         {
             var products = await productService.GetProductsByCategoryAsync(catId);
-            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<GetProductDTO>>(products);
 
             return Ok(mappedProducts);
         }
 
         // GET: api/products/provider/{id}
         [HttpGet("provider/{provId}")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProductsFromProvider(int provId)
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductsByProviderAsync(int provId)
         {
             var products = await productService.GetProductsByProviderAsync(provId);
-            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<GetProductDTO>>(products);
 
             return Ok(mappedProducts);
         }
 
         // GET: api/products/category/{catId}/provider/{provId}
         [HttpGet("category/{catId}/provider/{provId}")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProductsFromCategoryAndProvider(int catId, int provId)
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductsByCategoryAndProviderAsync(int catId, int provId)
         {
             var products = await productService.GetProductsByCategoryAndProviderAsync(catId, provId);
-            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<GetProductDTO>>(products);
 
             return Ok(mappedProducts);
         }
@@ -120,30 +120,30 @@ namespace SyntPolApi.Controllers
 
         // GET: api/products/all/category/{id}
         [HttpGet("all/category/{catId}")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsFromCategory(int catId)
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsByCategoryAsync(int catId)
         {
             var products = await productService.GetAllProductsByCategoryAsync(catId);
-            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<GetProductDTO>>(products);
 
             return Ok(mappedProducts);
         }
 
         // GET: api/products/all/provider/{id}
         [HttpGet("all/provider/{provId}")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsFromProvider(int provId)
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsByProviderAsync(int provId)
         {
             var products = await productService.GetAllProductsByProviderAsync(provId);
-            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<GetProductDTO>>(products);
 
             return Ok(mappedProducts);
         }
 
         // GET: api/products/all/category/{catId}/provider/{provId}
         [HttpGet("all/category/{catId}/provider/{provId}")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsFromCategoryAndProvider(int catId, int provId)
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsByCategoryAndProviderAsync(int catId, int provId)
         {
             var products = await productService.GetAllProductsByCategoryAndProviderAsync(catId, provId);
-            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<ProductDTO>>(products);
+            var mappedProducts = mapper.Map<IEnumerable<Product>, IEnumerable<GetProductDTO>>(products);
 
             return Ok(mappedProducts);
         }
@@ -152,9 +152,9 @@ namespace SyntPolApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        public async Task<IActionResult> PutProduct(int id, [FromBody] PostProductDTO product)
         {
-            if (id != product.ProductId || id == 0)
+            if (id == 0)
             {
                 return BadRequest();
             }
@@ -165,7 +165,8 @@ namespace SyntPolApi.Controllers
             {
                 return NotFound();
             }
-            await productService.UpdateProduct(productToBeUpdated, product);
+            var mappedProduct = mapper.Map<PostProductDTO, Product>(product);
+            await productService.UpdateProduct(productToBeUpdated, mappedProduct);
 
             var newProduct = await productService.GetDeletedByIdAsync(id);
             return Ok(newProduct);
@@ -175,15 +176,16 @@ namespace SyntPolApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<Product>> PostProduct([FromBody] PostProductDTO product)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            await productService.CreateProduct(product);
+            var mappedProduct = mapper.Map<PostProductDTO, Product>(product);
+            await productService.CreateProduct(mappedProduct);
 
-            return CreatedAtAction("GetProduct", new { id = product.ProductId }, product);
+            return Ok();
         }
 
         // DELETE: api/Products/5

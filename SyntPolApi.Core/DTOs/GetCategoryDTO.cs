@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SyntPolApi.Core.DTOs
 {
-    public class CategoryDTO
+    public class GetCategoryDTO
     {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }

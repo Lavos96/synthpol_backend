@@ -12,13 +12,21 @@ namespace SyntPolApi.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<Product, ProductDTO>();
-            CreateMap<Provider, ProviderDTO>();
-            CreateMap<Category, CategoryDTO>();
+            CreateMap<Product, GetProductDTO>();
+            CreateMap<Provider, GetProviderDTO>();
+            CreateMap<Category, GetCategoryDTO>();
 
-            CreateMap<ProductDTO, Product>();
-            CreateMap<ProviderDTO, Provider>();
-            CreateMap<CategoryDTO, Category>();
+            CreateMap<GetProductDTO, Product>();
+            CreateMap<GetProviderDTO, Provider>();
+            CreateMap<GetCategoryDTO, Category>();
+
+            CreateMap<Product, PostProductDTO>();
+            CreateMap<Provider, PostProviderDTO>();
+            CreateMap<Category, PostCategoryDTO>();
+
+            CreateMap<PostProductDTO, Product>();
+            CreateMap<PostProviderDTO, Provider>();
+            CreateMap<PostCategoryDTO, Category>();
         }
     }
 }

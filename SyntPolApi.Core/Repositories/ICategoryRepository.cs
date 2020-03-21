@@ -14,6 +14,6 @@ namespace SyntPolApi.Core.Repositories
         ValueTask<Category> GetByIdAsync(int id);
 
         //remove does not actually remove (updates ShallDisplay to false instead)
-        void Remove(int id);
+        Task Remove(int id);
     }
 }

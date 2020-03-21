@@ -28,10 +28,11 @@ namespace SyntPolApi.DAL.Repositories
             return await syntPolApiDbContext.Providers.Where(pr => pr.ShallDisplay).FirstOrDefaultAsync(pr => pr.ProviderId == id);
         }
 
-        public async void Remove(int id)
+        public async Task Remove(int id)
         {
             var provider = await syntPolApiDbContext.Providers.FirstOrDefaultAsync(pr => pr.ProviderId == id);
             provider.ShallDisplay = false;
+            await syntPolApiDbContext.SaveChangesAsync();
         }
     }
 }

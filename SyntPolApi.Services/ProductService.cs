@@ -26,7 +26,7 @@ namespace SyntPolApi.Services
 
         public async Task DeleteProduct(int id)
         {
-            unitOfWork.Products.Remove(id);
+            await unitOfWork.Products.Remove(id);
             await unitOfWork.CommitAsync();
         }
 
@@ -87,7 +87,6 @@ namespace SyntPolApi.Services
             productToBeUpdated.Name = product.Name;
             productToBeUpdated.NettoPrice = product.NettoPrice;
             productToBeUpdated.PhotoString = product.PhotoString;
-            productToBeUpdated.ProductId = product.ProductId;
             productToBeUpdated.ProviderId = product.ProviderId;
             productToBeUpdated.ShallDisplay = product.ShallDisplay;
             productToBeUpdated.VAT = product.VAT;

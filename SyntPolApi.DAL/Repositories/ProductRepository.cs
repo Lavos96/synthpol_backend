@@ -88,10 +88,11 @@ namespace SyntPolApi.DAL.Repositories
                 .ToListAsync();
         }
 
-        public async void Remove(int id)
+        public async Task Remove(int id)
         {
             var product = await syntPolApiDbContext.Products.FirstOrDefaultAsync(pr => pr.ProductId == id);
             product.ShallDisplay = false;
+            await syntPolApiDbContext.SaveChangesAsync();
         }
     }
 }

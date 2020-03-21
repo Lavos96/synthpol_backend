@@ -26,7 +26,7 @@ namespace SyntPolApi.Services
 
         public async Task DeleteCategory(int id)
         {
-            unitOfWork.Categories.Remove(id);
+            await unitOfWork.Categories.Remove(id);
             await unitOfWork.CommitAsync();
         }
 
@@ -52,7 +52,6 @@ namespace SyntPolApi.Services
 
         public async Task UpdateCategory(Category categoryToBeUpdated, Category category)
         {
-            categoryToBeUpdated.CategoryId = category.CategoryId;
             categoryToBeUpdated.CategoryName = category.CategoryName;
             categoryToBeUpdated.ShallDisplay = category.ShallDisplay;
 

@@ -27,7 +27,7 @@ namespace SyntPolApi.Services
 
         public async Task DeleteProvider(int id)
         {
-            unitOfWork.Providers.Remove(id);
+            await unitOfWork.Providers.Remove(id);
             await unitOfWork.CommitAsync();
         }
 
@@ -58,7 +58,6 @@ namespace SyntPolApi.Services
             providerToBeUpdated.HomeNumber = provider.HomeNumber;
             providerToBeUpdated.LastName = provider.LastName;
             providerToBeUpdated.NIP = provider.NIP;
-            providerToBeUpdated.ProviderId = provider.ProviderId;
             providerToBeUpdated.ProviderNumber = provider.ProviderNumber;
             providerToBeUpdated.ShallDisplay = provider.ShallDisplay;
             providerToBeUpdated.Street = provider.Street;

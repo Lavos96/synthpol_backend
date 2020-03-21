@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SyntPolApi.Core.DTOs;
 using SyntPolApi.Core.Models;
 using SyntPolApi.Core.Services;
 using System;
@@ -13,10 +15,12 @@ namespace SyntPolApi.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService categoryService;
+        private readonly IMapper mapper;
 
-        public CategoriesController(ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService, IMapper mapper)
         {
             this.categoryService = categoryService;
+            this.mapper = mapper;
         }
 
         // GET: api/Categories
@@ -87,20 +91,20 @@ namespace SyntPolApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        public async Task<IActionResult> PutCategory(int id, [FromBody]PostCategoryDTO category)
         {
-            if (id != category.CategoryId || id == 0)
+            if(id == 0)
             {
                 return BadRequest();
             }
-
             var categoryToBeUpdated = await categoryService.GetDeletedByIdAsync(id);
 
             if(categoryToBeUpdated == null)
             {
                 return NotFound();
             }
-            await categoryService.UpdateCategory(categoryToBeUpdated, category);
+            var mappedCategory = mapper.Map<PostCategoryDTO, Category>(category);
+            await categoryService.UpdateCategory(categoryToBeUpdated, mappedCategory);
 
             var newCategory = await categoryService.GetDeletedByIdAsync(id);
             return Ok(newCategory);
@@ -110,15 +114,16 @@ namespace SyntPolApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost("")]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<ActionResult<Category>> PostCategory([FromBody]PostCategoryDTO category)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            await categoryService.CreateCategory(category);
+            var mappedCategory = mapper.Map<PostCategoryDTO, Category>(category);
 
-            return CreatedAtAction("GetCategory", new { id = category.CategoryId }, category);
+            await categoryService.CreateCategory(mappedCategory);
+            return Ok();
         }
 
         // DELETE: api/Categories/5

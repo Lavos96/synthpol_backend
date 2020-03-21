@@ -24,6 +24,6 @@ namespace SyntPolApi.Core.Repositories
         Task<IEnumerable<Product>> GetAllProductsByCategoryAndProviderAsync(int catId, int provId);
 
         //remove does not actually remove (updates ShallDisplay to false instead)
-        void Remove(int id);
+        Task Remove(int id);
     }
 }

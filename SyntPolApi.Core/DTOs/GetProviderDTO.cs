@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SyntPolApi.Core.DTOs
 {
-    public class ProviderDTO
+    public class GetProviderDTO
     {
         public int ProviderId { get; set; }
         public int ProviderNumber { get; set; }
