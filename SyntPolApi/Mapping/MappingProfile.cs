@@ -27,6 +27,10 @@ namespace SyntPolApi.Mapping
             CreateMap<PostProductDTO, Product>();
             CreateMap<PostProviderDTO, Provider>();
             CreateMap<PostCategoryDTO, Category>();
+
+            CreateMap<OrderItem, GetOrderItemDTO>();
+            CreateMap<Product, GetProductForOrderDTO>();
+            CreateMap<Order, GetOrderDTO>();
         }
     }
 }

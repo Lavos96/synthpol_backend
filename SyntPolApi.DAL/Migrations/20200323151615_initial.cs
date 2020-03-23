@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SyntPolApi.DAL.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -72,7 +72,7 @@ namespace SyntPolApi.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderNumber = table.Column<int>(nullable: false),
                     SellDate = table.Column<DateTime>(nullable: false),
-                    OrderValue = table.Column<decimal>(nullable: false),
+                    OrderValue = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     OrderState = table.Column<int>(nullable: false),
                     ShallDisplay = table.Column<bool>(nullable: false),
                     InvoiceId = table.Column<int>(nullable: true)
@@ -127,8 +127,8 @@ namespace SyntPolApi.DAL.Migrations
                     OrderItemId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<int>(nullable: false),
-                    Discount = table.Column<decimal>(nullable: false),
-                    BruttoPrice = table.Column<decimal>(nullable: false),
+                    Discount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    BruttoPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     ProductId = table.Column<int>(nullable: false),
                     OrderId = table.Column<int>(nullable: false)
                 },

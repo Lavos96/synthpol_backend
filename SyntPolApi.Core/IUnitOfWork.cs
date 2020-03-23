@@ -11,6 +11,8 @@ namespace SyntPolApi.Core
         IProductRepository Products { get; }
         IProviderRepository Providers { get; }
         ICategoryRepository Categories { get; }
+        IOrderRepository Orders { get; }
+        IOrderItemRepository OrderItems { get; }
         Task<int> CommitAsync();
     }
 }
