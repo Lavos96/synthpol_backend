@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace SyntPolApi.Model
+namespace SyntPolApi.Core.Models
 {
-    public class Provider
+    public class Invoice
     {
-        public int ProviderId { get; set; }
-        public int ProviderNumber { get; set; }
+        public int InvoiceId { get; set; }
+        public int InvoiceNumber { get; set; }
+        public DateTime IssueDate { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Street { get; set; }
@@ -16,9 +16,9 @@ namespace SyntPolApi.Model
         public string ZipCode { get; set; }
         public string City { get; set; }
         public string NIP { get; set; }
-        public bool ShallDisplay { get; set; }
+        public string Country { get; set; }
 
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Order> Orders { get; set; }
 
     }
 }

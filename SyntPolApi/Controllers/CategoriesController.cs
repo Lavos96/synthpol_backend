@@ -1,12 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SyntPolApi.Core.DTOs;
+using SyntPolApi.Core.Models;
+using SyntPolApi.Core.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SyntPolApi.DAL;
-using SyntPolApi.Model;
 
 namespace SyntPolApi.Controllers
 {
@@ -14,126 +14,136 @@ namespace SyntPolApi.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly SyntPolDbContext _context;
+        private readonly ICategoryService categoryService;
+        private readonly IMapper mapper;
 
-        public CategoriesController(SyntPolDbContext context)
+        public CategoriesController(ICategoryService categoryService, IMapper mapper)
         {
-            _context = context;
+            this.categoryService = categoryService;
+            this.mapper = mapper;
         }
 
         // GET: api/Categories
-        [HttpGet]
+        [HttpGet("")]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            return await _context.Categories
-                .Where(s => s.ShallDisplay)
-                .ToListAsync();
+            var categories = await categoryService.GetAsync();
+            if(categories == null)
+            {
+                return NotFound();
+            }
+            return Ok(categories);
         }
 
         // GET: api/Categories/all
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories()
         {
-            return await _context.Categories
-                .ToListAsync();
+            var categories = await categoryService.GetAllAsync();
+
+            if (categories == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(categories);
         }
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            if(id == 0)
+            {
+                return BadRequest();
+            }
 
-            if (category == null || !category.ShallDisplay)
+            var category = await categoryService.GetByIdAsync(id);
+
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return category;
+            return Ok(category);
         }
 
         // GET: api/Categories/5
         [HttpGet("all/{id}")]
         public async Task<ActionResult<Category>> GetDeletedCategory(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+
+            var category = await categoryService.GetDeletedByIdAsync(id);
 
             if (category == null)
             {
                 return NotFound();
             }
 
-            return category;
+            return Ok(category);
         }
 
         // PUT: api/Categories/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        public async Task<IActionResult> PutCategory(int id, [FromBody]PostCategoryDTO category)
         {
-            if (id != category.CategoryId)
+            if(id == 0)
             {
                 return BadRequest();
             }
+            var categoryToBeUpdated = await categoryService.GetDeletedByIdAsync(id);
 
-            _context.Entry(category).State = EntityState.Modified;
+            if(categoryToBeUpdated == null)
+            {
+                return NotFound();
+            }
+            var mappedCategory = mapper.Map<PostCategoryDTO, Category>(category);
+            await categoryService.UpdateCategory(categoryToBeUpdated, mappedCategory);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-                return Ok();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var newCategory = await categoryService.GetDeletedByIdAsync(id);
+            return Ok(newCategory);
         }
 
         // POST: api/Categories
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        [HttpPost("")]
+        public async Task<ActionResult<Category>> PostCategory([FromBody]PostCategoryDTO category)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
+            var mappedCategory = mapper.Map<PostCategoryDTO, Category>(category);
 
-            return CreatedAtAction("GetCategory", new { id = category.CategoryId }, category);
+            await categoryService.CreateCategory(mappedCategory);
+            return Ok();
         }
 
         // DELETE: api/Categories/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Category>> DeleteCategory(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+
+            var categoryToBeDeleted = await categoryService.GetDeletedByIdAsync(id);
+
+            if (categoryToBeDeleted == null)
             {
                 return NotFound();
             }
+            await categoryService.DeleteCategory(id);
 
-            category.ShallDisplay = false;
-
-            await TryUpdateModelAsync(category);
-            await _context.SaveChangesAsync();
-
-            return category;
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.CategoryId == id);
+            return NoContent();
         }
     }
 }

@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SyntPolApi.DAL;
 
-namespace SyntPolApi.Migrations
+namespace SyntPolApi.DAL.Migrations
 {
-    [DbContext(typeof(SyntPolDbContext))]
-    partial class SyntPolDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SyntPolApiDbContext))]
+    partial class SyntPolApiDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -19,14 +19,17 @@ namespace SyntPolApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("SyntPolApi.Model.Category", b =>
+            modelBuilder.Entity("SyntPolApi.Core.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CategoryName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("ShallDisplay")
@@ -37,7 +40,7 @@ namespace SyntPolApi.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("SyntPolApi.Model.Invoice", b =>
+            modelBuilder.Entity("SyntPolApi.Core.Models.Invoice", b =>
                 {
                     b.Property<int>("InvoiceId")
                         .ValueGeneratedOnAdd()
@@ -79,7 +82,7 @@ namespace SyntPolApi.Migrations
                     b.ToTable("Invoices");
                 });
 
-            modelBuilder.Entity("SyntPolApi.Model.Order", b =>
+            modelBuilder.Entity("SyntPolApi.Core.Models.Order", b =>
                 {
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
@@ -111,7 +114,7 @@ namespace SyntPolApi.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("SyntPolApi.Model.OrderItem", b =>
+            modelBuilder.Entity("SyntPolApi.Core.Models.OrderItem", b =>
                 {
                     b.Property<int>("OrderItemId")
                         .ValueGeneratedOnAdd()
@@ -142,11 +145,13 @@ namespace SyntPolApi.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("SyntPolApi.Model.Product", b =>
+            modelBuilder.Entity("SyntPolApi.Core.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("CategoryId")
@@ -156,12 +161,14 @@ namespace SyntPolApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("NettoPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("PhotoString")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProviderId")
@@ -182,26 +189,32 @@ namespace SyntPolApi.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("SyntPolApi.Model.Provider", b =>
+            modelBuilder.Entity("SyntPolApi.Core.Models.Provider", b =>
                 {
                     b.Property<int>("ProviderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("HomeNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NIP")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProviderNumber")
@@ -211,9 +224,11 @@ namespace SyntPolApi.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Street")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ZipCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProviderId");
@@ -221,37 +236,37 @@ namespace SyntPolApi.Migrations
                     b.ToTable("Providers");
                 });
 
-            modelBuilder.Entity("SyntPolApi.Model.Order", b =>
+            modelBuilder.Entity("SyntPolApi.Core.Models.Order", b =>
                 {
-                    b.HasOne("SyntPolApi.Model.Invoice", null)
+                    b.HasOne("SyntPolApi.Core.Models.Invoice", null)
                         .WithMany("Orders")
                         .HasForeignKey("InvoiceId");
                 });
 
-            modelBuilder.Entity("SyntPolApi.Model.OrderItem", b =>
+            modelBuilder.Entity("SyntPolApi.Core.Models.OrderItem", b =>
                 {
-                    b.HasOne("SyntPolApi.Model.Order", "Order")
+                    b.HasOne("SyntPolApi.Core.Models.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SyntPolApi.Model.Product", "Product")
+                    b.HasOne("SyntPolApi.Core.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SyntPolApi.Model.Product", b =>
+            modelBuilder.Entity("SyntPolApi.Core.Models.Product", b =>
                 {
-                    b.HasOne("SyntPolApi.Model.Category", "Category")
+                    b.HasOne("SyntPolApi.Core.Models.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SyntPolApi.Model.Provider", "Provider")
+                    b.HasOne("SyntPolApi.Core.Models.Provider", "Provider")
                         .WithMany("Products")
                         .HasForeignKey("ProviderId")
                         .OnDelete(DeleteBehavior.Cascade)

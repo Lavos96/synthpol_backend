@@ -1,32 +1,32 @@
-﻿using SyntPolApi.Model;
+﻿using SyntPolApi.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
 namespace SyntPolApi.DAL
 {
-    public class SeedData
-    {
-        public static void Initialize(SyntPolDbContext context)
-        {
-            context.Database.EnsureCreated();
+	public class SeedData
+	{
+		public static void Initialize(SyntPolApiDbContext context)
+		{
+			context.Database.EnsureCreated();
 
-            // Look for any students.
-            if (context.Products.Any())
-            {
-                return;   // DB has been seeded
-            }
+			// Look for any students.
+			if (context.Products.Any())
+			{
+				return;   // DB has been seeded
+			}
 
-            AddProviders(context);
-            AddCategories(context);
-            AddProducts(context);
-            
-            context.SaveChanges();
-        }
+			AddProviders(context);
+			AddCategories(context);
+			AddProducts(context);
 
-        private static void AddProviders(SyntPolDbContext context)
-        {
+			context.SaveChanges();
+		}
+
+		private static void AddProviders(SyntPolApiDbContext context)
+		{
 			Provider[] providers = new Provider[]
 			{
 				new Provider {
@@ -68,11 +68,11 @@ namespace SyntPolApi.DAL
 			{
 				context.Add(prov);
 			}
-            context.SaveChanges();
-        }
+			context.SaveChanges();
+		}
 
-        private static void AddCategories(SyntPolDbContext context)
-        {
+		private static void AddCategories(SyntPolApiDbContext context)
+		{
 			Category[] categories = new Category[]
 			{
 				new Category {
@@ -100,15 +100,15 @@ namespace SyntPolApi.DAL
 					ShallDisplay = true
 				},
 			};
-			foreach(var cat in categories)
+			foreach (var cat in categories)
 			{
 				context.Categories.Add(cat);
 			}
-            context.SaveChanges();
-        }
+			context.SaveChanges();
+		}
 
-        private static void AddProducts(SyntPolDbContext context)
-        {
+		private static void AddProducts(SyntPolApiDbContext context)
+		{
 			Product[] products = new Product[]
 			{
 				new Product
@@ -411,10 +411,10 @@ namespace SyntPolApi.DAL
 			};
 
 			foreach (var product in products)
-            {
-                context.Products.Add(product);
-            }
-            context.SaveChanges();
-        }
-    }
+			{
+				context.Products.Add(product);
+			}
+			context.SaveChanges();
+		}
+	}
 }

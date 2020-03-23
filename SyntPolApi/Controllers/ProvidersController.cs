@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SyntPolApi.Core.DTOs;
+using SyntPolApi.Core.Models;
+using SyntPolApi.Core.Services;
 using SyntPolApi.DAL;
-using SyntPolApi.Model;
 
 namespace SyntPolApi.Controllers
 {
@@ -14,126 +17,137 @@ namespace SyntPolApi.Controllers
     [ApiController]
     public class ProvidersController : ControllerBase
     {
-        private readonly SyntPolDbContext _context;
+        private readonly IProviderService providerService;
+        private readonly IMapper mapper;
 
-        public ProvidersController(SyntPolDbContext context)
+        public ProvidersController(IProviderService service, IMapper mapper)
         {
-            _context = context;
+            providerService = service;
+            this.mapper = mapper;
         }
 
         // GET: api/Providers
-        [HttpGet]
+        [HttpGet("")]
         public async Task<ActionResult<IEnumerable<Provider>>> GetProviders()
         {
-            return await _context.Providers
-                .Where(s => s.ShallDisplay)
-                .ToListAsync();
+            var providers = await providerService.GetAsync();
+            if (providers == null)
+            {
+                return NotFound();
+            }
+            return Ok(providers);
         }
 
         // GET: api/Providers
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<Provider>>> GetAllProviders()
         {
-            return await _context.Providers
-                .ToListAsync();
+            var providers = await providerService.GetAllAsync();
+
+            if (providers == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(providers);
         }
 
         // GET: api/Providers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Provider>> GetProvider(int id)
         {
-            var provider = await _context.Providers.FindAsync(id);
+            if (id == 0)
+            {
+                return BadRequest();
+            }
 
-            if (provider == null || !provider.ShallDisplay)
+            var provider = await providerService.GetByIdAsync(id);
+
+            if (provider == null)
             {
                 return NotFound();
             }
 
-            return provider;
+            return Ok(provider);
         }
 
         // GET: api/Providers/5
         [HttpGet("all/{id}")]
         public async Task<ActionResult<Provider>> GetDeletedProvider(int id)
         {
-            var provider = await _context.Providers.FindAsync(id);
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+
+            var provider = await providerService.GetDeletedByIdAsync(id);
 
             if (provider == null)
             {
                 return NotFound();
             }
 
-            return provider;
+            return Ok(provider);
         }
 
         // PUT: api/Providers/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProvider(int id, Provider provider)
+        public async Task<IActionResult> PutProvider(int id, [FromBody]PostProviderDTO provider)
         {
-            if (id != provider.ProviderId)
+            if (id == 0)
             {
                 return BadRequest();
             }
 
-            _context.Entry(provider).State = EntityState.Modified;
+            var providerToBeUpdated = await providerService.GetDeletedByIdAsync(id);
 
-            try
+            if (providerToBeUpdated == null)
             {
-                await _context.SaveChangesAsync();
-                return Ok();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProviderExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var mappedProvider = mapper.Map<PostProviderDTO, Provider>(provider);
+            await providerService.UpdateProvider(providerToBeUpdated, mappedProvider);
+
+            var newProvider = await providerService.GetDeletedByIdAsync(id);
+            return Ok(newProvider);
         }
 
         // POST: api/Providers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Provider>> PostProvider(Provider provider)
+        public async Task<ActionResult<Provider>> PostProvider([FromBody] PostProviderDTO provider)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            _context.Providers.Add(provider);
-            await _context.SaveChangesAsync();
+            var mappedProvider = mapper.Map<PostProviderDTO, Provider>(provider);
+            await providerService.CreateProvider(mappedProvider);
 
-            return CreatedAtAction("GetProvider", new { id = provider.ProviderId }, provider);
+            return Ok();
         }
 
         // DELETE: api/Providers/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Provider>> DeleteProvider(int id)
         {
-            var provider = await _context.Providers.FindAsync(id);
-            if (provider == null)
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+
+            var providerToBeDeleted = await providerService.GetDeletedByIdAsync(id);
+
+            if (providerToBeDeleted == null)
             {
                 return NotFound();
             }
+            await providerService.DeleteProvider(id);
 
-            provider.ShallDisplay = false;
-
-            await TryUpdateModelAsync(provider);
-            await _context.SaveChangesAsync();
-
-            return provider;
-        }
-
-        private bool ProviderExists(int id)
-        {
-            return _context.Providers.Any(e => e.ProviderId == id);
+            return NoContent();
         }
     }
 }
