@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SyntPolApi.Core.Models
+namespace SyntPolApi.Core.DTOs
 {
-    public class Invoice
+    public class GetInvoiceDTO
     {
         public int InvoiceId { get; set; }
         public int InvoiceNumber { get; set; }
@@ -17,9 +17,5 @@ namespace SyntPolApi.Core.Models
         public string City { get; set; }
         public string NIP { get; set; }
         public string Country { get; set; }
-
-        public int OrderId { get; set; }
-        public Order Order { get; set; }
-
     }
 }

@@ -28,6 +28,7 @@ namespace SyntPolApi.DAL
             builder.ApplyConfiguration(new CategoryConfiguration());
             builder.ApplyConfiguration(new OrderConfiguration());
             builder.ApplyConfiguration(new OrderItemConfiguration());
+            builder.ApplyConfiguration(new InvoiceConfiguration());
         }
     }
 }

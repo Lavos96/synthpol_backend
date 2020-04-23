@@ -16,6 +16,7 @@ namespace SyntPolApi.DAL
         private ProviderRepository providerRepository;
         private OrderRepository orderRepository;
         private OrderItemRepository orderItemRepository;
+        private InvoiceRepository invoiceRepository;
 
         public UnitOfWork(SyntPolApiDbContext context)
         {
@@ -30,6 +31,7 @@ namespace SyntPolApi.DAL
 
         public IOrderRepository Orders => orderRepository = orderRepository ?? new OrderRepository(context);
         public IOrderItemRepository OrderItems => orderItemRepository = orderItemRepository ?? new OrderItemRepository(context);
+        public IInvoiceRepository Invoices => invoiceRepository = invoiceRepository ?? new InvoiceRepository(context);
 
         public async Task<int> CommitAsync()
         {

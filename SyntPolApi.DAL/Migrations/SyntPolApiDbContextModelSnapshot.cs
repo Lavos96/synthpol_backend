@@ -45,15 +45,20 @@ namespace SyntPolApi.DAL.Migrations
                     b.Property<int>("InvoiceId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("HomeNumber")
@@ -66,15 +71,22 @@ namespace SyntPolApi.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NIP")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Street")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ZipCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("InvoiceId");
@@ -111,7 +123,9 @@ namespace SyntPolApi.DAL.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.HasIndex("InvoiceId");
+                    b.HasIndex("InvoiceId")
+                        .IsUnique()
+                        .HasFilter("[InvoiceId] IS NOT NULL");
 
                     b.ToTable("Orders");
                 });
@@ -242,9 +256,9 @@ namespace SyntPolApi.DAL.Migrations
 
             modelBuilder.Entity("SyntPolApi.Core.Models.Order", b =>
                 {
-                    b.HasOne("SyntPolApi.Core.Models.Invoice", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("InvoiceId");
+                    b.HasOne("SyntPolApi.Core.Models.Invoice", "Invoice")
+                        .WithOne("Order")
+                        .HasForeignKey("SyntPolApi.Core.Models.Order", "InvoiceId");
                 });
 
             modelBuilder.Entity("SyntPolApi.Core.Models.OrderItem", b =>

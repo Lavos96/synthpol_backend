@@ -13,6 +13,7 @@ namespace SyntPolApi.Core
         ICategoryRepository Categories { get; }
         IOrderRepository Orders { get; }
         IOrderItemRepository OrderItems { get; }
+        IInvoiceRepository Invoices { get; }
         Task<int> CommitAsync();
     }
 }

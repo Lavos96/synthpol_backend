@@ -10,8 +10,8 @@ namespace SyntPolApi.Core.Models
         public int OrderNumber { get; set; }
         public DateTime SellDate { get; set; }
 
-        //public int InvoiceId { get; set; }
-        //public Invoice Invoice { get; set; }
+        public int? InvoiceId { get; set; }
+        public Invoice Invoice { get; set; }
         public decimal OrderValue { get; set; }
         public OrderState OrderState { get; set; }
         public bool ShallDisplay { get; set; }

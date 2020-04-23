@@ -18,6 +18,10 @@ namespace SyntPolApi.DAL.Configurations
                 .UseIdentityColumn();
 
             builder
+                .Property(o => o.OrderNumber)
+                .UseIdentityColumn();
+
+            builder
                 .Property(o => o.OrderValue)
                 .HasColumnType("decimal(10,2)")
                 .IsRequired();
@@ -26,6 +30,11 @@ namespace SyntPolApi.DAL.Configurations
                 .HasMany(o => o.OrderItems)
                 .WithOne(or => or.Order)
                 .HasForeignKey(o => o.OrderId);
+
+            builder
+                .HasOne(o => o.Invoice)
+                .WithOne(i => i.Order)
+                .HasForeignKey<Invoice>(i => i.InvoiceId);
 
             builder.ToTable("Orders");
         }

@@ -20,14 +20,16 @@ namespace SyntPolApi.Controllers
         private readonly IOrderService orderService;
         private readonly IProductService productService;
         private readonly IOrderItemService orderItemService;
+        private readonly IInvoiceService invoiceService;
         private readonly IMapper mapper;
 
-        public OrdersController(IOrderService orderService, IMapper mapper, IProductService productService, IOrderItemService orderItemService)
+        public OrdersController(IOrderService orderService, IMapper mapper, IProductService productService, IOrderItemService orderItemService, IInvoiceService invoiceService)
         {
             this.orderService = orderService;
             this.mapper = mapper;
             this.productService = productService;
             this.orderItemService = orderItemService;
+            this.invoiceService = invoiceService;
         }
 
         // GET: api/Orders
@@ -112,6 +114,7 @@ namespace SyntPolApi.Controllers
             orderToAdd.SellDate = DateTime.Now;
             orderToAdd.ShallDisplay = true;
             orderToAdd.OrderState = OrderState.New;
+            orderToAdd.InvoiceId = null;
             orderToAdd.OrderValue = 0.0M;
 
             List<Product> products = new List<Product>();
@@ -120,13 +123,15 @@ namespace SyntPolApi.Controllers
             {
                 var product = await productService.GetByIdAsync(item.ProductId);
                 products.Add(product);
-                orderToAdd.OrderValue += product.NettoPrice + decimal.Divide(product.VAT, 100) * product.NettoPrice * item.QuantityOfProducts;
+                orderToAdd.OrderValue += (product.NettoPrice + decimal.Divide(product.VAT, 100) * product.NettoPrice) * item.QuantityOfProducts;
             }
 
-            await orderService.CreateOrder(orderToAdd);
+            var placedOrder = await orderService.CreateOrder(orderToAdd);
 
             //tu zle 
-            var placedOrder = await orderService.GetByIdAsync(orderToAdd.OrderId);
+            //var placedOrder = await orderService.GetByIdAsync(orderToAdd.OrderId);
+
+            var invoice = await CreateInvoice(placedOrder.OrderId, order.Invoice);
             
             foreach(var product in products)
             {
@@ -136,7 +141,7 @@ namespace SyntPolApi.Controllers
                     if(item.ProductId == product.ProductId)
                     {
                         orderItem.Amount = item.QuantityOfProducts;
-                        orderItem.BruttoPrice += product.NettoPrice + decimal.Divide(product.VAT, 100) * product.NettoPrice * item.QuantityOfProducts;
+                        orderItem.BruttoPrice += (product.NettoPrice + decimal.Divide(product.VAT, 100) * product.NettoPrice) * item.QuantityOfProducts;
                     }
                 }
                 
@@ -165,5 +170,14 @@ namespace SyntPolApi.Controllers
 
         //    return order;
         //}
+
+        public async Task<Invoice> CreateInvoice(int orderId, PostInvoiceDTO invoice)
+        {
+            var invoiceToAdd = mapper.Map<PostInvoiceDTO, Invoice>(invoice);
+            invoiceToAdd.IssueDate = DateTime.Now;
+            invoiceToAdd.OrderId = orderId;
+            var addedInvoice = await invoiceService.CreateInvoice(invoiceToAdd);
+            return addedInvoice;
+        }
     }
 }
