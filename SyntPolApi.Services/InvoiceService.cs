@@ -42,9 +42,7 @@ namespace SyntPolApi.Services
         public async Task UpdateInvoice(Invoice invoiceToBeUpdated, Invoice invoice)
         {
             invoiceToBeUpdated.City = invoice.City;
-            invoiceToBeUpdated.FirstName = invoice.FirstName;
-            invoiceToBeUpdated.InvoiceNumber = invoice.InvoiceNumber;
-            invoiceToBeUpdated.LastName = invoice.LastName;
+            invoiceToBeUpdated.Name = invoice.Name;
             invoiceToBeUpdated.NIP = invoice.NIP;
             invoiceToBeUpdated.Street = invoice.Street;
             invoiceToBeUpdated.ZipCode = invoice.ZipCode;

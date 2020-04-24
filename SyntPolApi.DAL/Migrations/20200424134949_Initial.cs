@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SyntPolApi.DAL.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,12 +27,10 @@ namespace SyntPolApi.DAL.Migrations
                 {
                     InvoiceId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    InvoiceNumber = table.Column<int>(nullable: true),
                     IssueDate = table.Column<DateTime>(nullable: false),
                     DeliveryDate = table.Column<DateTime>(nullable: false),
                     NIP = table.Column<string>(nullable: false),
-                    FirstName = table.Column<string>(nullable: false),
-                    LastName = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     City = table.Column<string>(nullable: false),
                     Street = table.Column<string>(nullable: false),
                     ZipCode = table.Column<string>(nullable: false),
@@ -70,7 +68,6 @@ namespace SyntPolApi.DAL.Migrations
                 {
                     OrderId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderNumber = table.Column<int>(nullable: true),
                     SellDate = table.Column<DateTime>(nullable: false),
                     InvoiceId = table.Column<int>(nullable: true),
                     OrderValue = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
@@ -127,8 +124,8 @@ namespace SyntPolApi.DAL.Migrations
                     OrderItemId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<int>(nullable: false),
-                    Discount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     BruttoPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    NettoPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     ProductId = table.Column<int>(nullable: false),
                     OrderId = table.Column<int>(nullable: false)
                 },

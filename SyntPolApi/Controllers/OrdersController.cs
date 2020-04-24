@@ -133,29 +133,35 @@ namespace SyntPolApi.Controllers
             //tu zle 
             //var placedOrder = await orderService.GetByIdAsync(orderToAdd.OrderId);
 
-            //var invoice = await CreateInvoice(placedOrder.OrderId, order.Invoice);
+            var invoice = await CreateInvoice(placedOrder.OrderId, order.Invoice);
             
             foreach(var product in products)
             {
-                var orderItem = new OrderItem();
-                foreach(var item in order.PostOrders)
+                var orderItem = new OrderItem
+                {
+                    OrderId = placedOrder.OrderId,
+                    ProductId = product.ProductId
+                };
+                foreach (var item in order.PostOrders)
                 {
                     if(item.ProductId == product.ProductId)
                     {
                         orderItem.Amount = item.QuantityOfProducts;
+                        orderItem.NettoPrice = product.NettoPrice * item.QuantityOfProducts;
                         orderItem.BruttoPrice += (product.NettoPrice + decimal.Divide(product.VAT, 100) * product.NettoPrice) * item.QuantityOfProducts;
                     }
                 }
-                
-                orderItem.Discount = 0.0M;
-                orderItem.OrderId = placedOrder.OrderId;
-                orderItem.ProductId = product.ProductId;
-                
                 await orderItemService.CreateOrderItem(orderItem);
             }
 
+            var newOrder = placedOrder;
+            newOrder.InvoiceId = invoice.InvoiceId;
+            await orderService.UpdateOrder(placedOrder, newOrder);
+
             return Ok();
         }
+
+        //TODO: delete orders (chyba bedzie zmienial orderState na completed)
 
         //// DELETE: api/Orders/5
         //[HttpDelete("{id}")]
@@ -176,7 +182,12 @@ namespace SyntPolApi.Controllers
         public async Task<Invoice> CreateInvoice(int orderId, PostInvoiceDTO invoice)
         {
             var invoiceToAdd = mapper.Map<PostInvoiceDTO, Invoice>(invoice);
+            if(string.IsNullOrWhiteSpace(invoiceToAdd.NIP))
+            {
+                invoiceToAdd.NIP = "1234567890";
+            }
             invoiceToAdd.IssueDate = DateTime.Now;
+            invoiceToAdd.DeliveryDate = DateTime.Now;
             invoiceToAdd.OrderId = orderId;
             var addedInvoice = await invoiceService.CreateInvoice(invoiceToAdd);
             return addedInvoice;

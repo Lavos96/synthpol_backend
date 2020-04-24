@@ -23,7 +23,7 @@ namespace SyntPolApi.DAL.Configurations
                 .IsRequired();
 
             builder
-                .Property(oi => oi.Discount)
+                .Property(oi => oi.NettoPrice)
                 .HasColumnType("decimal(10,2)")
                 .IsRequired();
 

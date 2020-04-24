@@ -18,12 +18,10 @@ namespace SyntPolApi.DAL.Configurations
                 .UseIdentityColumn();
 
             builder
-                .Property(i => i.FirstName)
+                .Property(i => i.Name)
                 .IsRequired();
 
-            builder
-                .Property(i => i.LastName)
-                .IsRequired();
+
 
             builder
                 .Property(i => i.Street)

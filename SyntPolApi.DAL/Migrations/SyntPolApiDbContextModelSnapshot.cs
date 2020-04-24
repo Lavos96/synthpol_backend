@@ -56,21 +56,14 @@ namespace SyntPolApi.DAL.Migrations
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("InvoiceNumber")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("IssueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("NIP")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NIP")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -100,9 +93,6 @@ namespace SyntPolApi.DAL.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("InvoiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OrderNumber")
                         .HasColumnType("int");
 
                     b.Property<int>("OrderState")
@@ -141,7 +131,7 @@ namespace SyntPolApi.DAL.Migrations
                     b.Property<decimal>("BruttoPrice")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<decimal>("Discount")
+                    b.Property<decimal>("NettoPrice")
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("OrderId")
