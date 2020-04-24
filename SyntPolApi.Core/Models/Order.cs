@@ -7,7 +7,7 @@ namespace SyntPolApi.Core.Models
     public class Order
     {
         public int OrderId { get; set; }
-        public int OrderNumber { get; set; }
+        public int? OrderNumber { get; set; }
         public DateTime SellDate { get; set; }
 
         public int? InvoiceId { get; set; }

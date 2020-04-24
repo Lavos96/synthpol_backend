@@ -18,10 +18,6 @@ namespace SyntPolApi.DAL.Configurations
                 .UseIdentityColumn();
 
             builder
-                .Property(o => o.OrderNumber)
-                .UseIdentityColumn();
-
-            builder
                 .Property(o => o.OrderValue)
                 .HasColumnType("decimal(10,2)")
                 .IsRequired();

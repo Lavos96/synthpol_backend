@@ -12,13 +12,9 @@ namespace SyntPolApi.DAL.Configurations
         public void Configure(EntityTypeBuilder<Invoice> builder)
         {
             builder.HasKey(i => i.InvoiceId);
-
+            
             builder
                 .Property(i => i.InvoiceId)
-                .UseIdentityColumn();
-
-            builder
-                .Property(i => i.InvoiceNumber)
                 .UseIdentityColumn();
 
             builder
@@ -43,10 +39,6 @@ namespace SyntPolApi.DAL.Configurations
 
             builder
                 .Property(i => i.NIP)
-                .IsRequired();
-
-            builder
-                .Property(i => i.Country)
                 .IsRequired();
 
             builder

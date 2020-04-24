@@ -27,16 +27,15 @@ namespace SyntPolApi.DAL.Migrations
                 {
                     InvoiceId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    InvoiceNumber = table.Column<int>(nullable: false),
+                    InvoiceNumber = table.Column<int>(nullable: true),
                     IssueDate = table.Column<DateTime>(nullable: false),
+                    DeliveryDate = table.Column<DateTime>(nullable: false),
+                    NIP = table.Column<string>(nullable: false),
                     FirstName = table.Column<string>(nullable: false),
                     LastName = table.Column<string>(nullable: false),
-                    Street = table.Column<string>(nullable: false),
-                    HomeNumber = table.Column<int>(nullable: false),
-                    ZipCode = table.Column<string>(nullable: false),
                     City = table.Column<string>(nullable: false),
-                    NIP = table.Column<string>(nullable: false),
-                    Country = table.Column<string>(nullable: false),
+                    Street = table.Column<string>(nullable: false),
+                    ZipCode = table.Column<string>(nullable: false),
                     OrderId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -71,7 +70,7 @@ namespace SyntPolApi.DAL.Migrations
                 {
                     OrderId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderNumber = table.Column<int>(nullable: false),
+                    OrderNumber = table.Column<int>(nullable: true),
                     SellDate = table.Column<DateTime>(nullable: false),
                     InvoiceId = table.Column<int>(nullable: true),
                     OrderValue = table.Column<decimal>(type: "decimal(10,2)", nullable: false),

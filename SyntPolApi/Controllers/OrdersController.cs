@@ -110,12 +110,14 @@ namespace SyntPolApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder([FromBody] PostOrderDTO order)
         {
-            var orderToAdd = new Order();
-            orderToAdd.SellDate = DateTime.Now;
-            orderToAdd.ShallDisplay = true;
-            orderToAdd.OrderState = OrderState.New;
-            orderToAdd.InvoiceId = null;
-            orderToAdd.OrderValue = 0.0M;
+            var orderToAdd = new Order
+            {
+                SellDate = DateTime.Now,
+                ShallDisplay = true,
+                OrderState = OrderState.New,
+                InvoiceId = null,
+                OrderValue = 0.0M
+            };
 
             List<Product> products = new List<Product>();
 
@@ -131,7 +133,7 @@ namespace SyntPolApi.Controllers
             //tu zle 
             //var placedOrder = await orderService.GetByIdAsync(orderToAdd.OrderId);
 
-            var invoice = await CreateInvoice(placedOrder.OrderId, order.Invoice);
+            //var invoice = await CreateInvoice(placedOrder.OrderId, order.Invoice);
             
             foreach(var product in products)
             {

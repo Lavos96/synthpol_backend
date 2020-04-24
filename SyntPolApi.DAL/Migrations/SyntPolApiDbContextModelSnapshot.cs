@@ -53,18 +53,14 @@ namespace SyntPolApi.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("DeliveryDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HomeNumber")
-                        .HasColumnType("int");
-
-                    b.Property<int>("InvoiceNumber")
+                    b.Property<int?>("InvoiceNumber")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("IssueDate")
@@ -106,7 +102,7 @@ namespace SyntPolApi.DAL.Migrations
                     b.Property<int?>("InvoiceId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderNumber")
+                    b.Property<int?>("OrderNumber")
                         .HasColumnType("int");
 
                     b.Property<int>("OrderState")

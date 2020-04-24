@@ -6,7 +6,7 @@ namespace SyntPolApi.Core.DTOs
 {
     public class PostOrderDTO
     {
-        public PostInvoiceDTO Invoice { get; set; }
+        //public PostInvoiceDTO Invoice { get; set; }
         public List<PostOrder> PostOrders { get; set; }
     }
 
