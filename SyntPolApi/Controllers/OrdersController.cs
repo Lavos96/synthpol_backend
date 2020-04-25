@@ -21,15 +21,18 @@ namespace SyntPolApi.Controllers
         private readonly IProductService productService;
         private readonly IOrderItemService orderItemService;
         private readonly IInvoiceService invoiceService;
+        private readonly IInvoiceEdiService invoiceEdiService;
         private readonly IMapper mapper;
 
-        public OrdersController(IOrderService orderService, IMapper mapper, IProductService productService, IOrderItemService orderItemService, IInvoiceService invoiceService)
+        public OrdersController(IOrderService orderService, IMapper mapper, IProductService productService, 
+            IOrderItemService orderItemService, IInvoiceService invoiceService, IInvoiceEdiService invoiceEdiService)
         {
             this.orderService = orderService;
             this.mapper = mapper;
             this.productService = productService;
             this.orderItemService = orderItemService;
             this.invoiceService = invoiceService;
+            this.invoiceEdiService = invoiceEdiService;
         }
 
         // GET: api/Orders
@@ -46,7 +49,7 @@ namespace SyntPolApi.Controllers
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
+        public async Task<ActionResult<Order>> GetOrderWithProducts(int id)
         {
             var order = await orderService.GetWithProductsAsync(id);
             if (order == null)
@@ -63,6 +66,20 @@ namespace SyntPolApi.Controllers
         public async Task<ActionResult<IEnumerable<Order>>> GetOrdersWithProducts()
         {
             var orders = await orderService.GetOrdersWithProductsAsync();
+            if (orders == null)
+            {
+                return NotFound();
+            }
+
+            var mappedOrders = mapper.Map<IEnumerable<Order>, IEnumerable<GetOrderDTO>>(orders);
+            return Ok(mappedOrders);
+        }
+
+        // GET: api/Orders
+        [HttpGet("user/{username}")]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersWithProductsByUsername(string username)
+        {
+            var orders = await orderService.GetAllOrdersWithProductsByUsername(username);
             if (orders == null)
             {
                 return NotFound();
@@ -116,7 +133,8 @@ namespace SyntPolApi.Controllers
                 ShallDisplay = true,
                 OrderState = OrderState.New,
                 InvoiceId = null,
-                OrderValue = 0.0M
+                OrderValue = 0.0M,
+                Username = order.Invoice.Username
             };
 
             List<Product> products = new List<Product>();
@@ -134,8 +152,16 @@ namespace SyntPolApi.Controllers
             //var placedOrder = await orderService.GetByIdAsync(orderToAdd.OrderId);
 
             var invoice = await CreateInvoice(placedOrder.OrderId, order.Invoice);
-            
-            foreach(var product in products)
+            var invoiceEdiToAdd = new InvoiceEdi
+            {
+                Username = invoice.Username,
+                InvoiceId = invoice.InvoiceId,
+                EdiString = "tutaj bedzie faktura w formacie edi"
+            };
+
+            var invoiceEdi = await invoiceEdiService.CreateInvoiceEdi(invoiceEdiToAdd);
+
+            foreach (var product in products)
             {
                 var orderItem = new OrderItem
                 {
@@ -157,6 +183,10 @@ namespace SyntPolApi.Controllers
             var newOrder = placedOrder;
             newOrder.InvoiceId = invoice.InvoiceId;
             await orderService.UpdateOrder(placedOrder, newOrder);
+
+            var newInvoice = invoice;
+            newInvoice.InvoiceEdiId = invoiceEdi.InvoiceEdiId;
+            await invoiceService.UpdateInvoice(invoice, newInvoice);
 
             return Ok();
         }
@@ -189,6 +219,7 @@ namespace SyntPolApi.Controllers
             invoiceToAdd.IssueDate = DateTime.Now;
             invoiceToAdd.DeliveryDate = DateTime.Now;
             invoiceToAdd.OrderId = orderId;
+            invoiceToAdd.Username = invoice.Username;
             var addedInvoice = await invoiceService.CreateInvoice(invoiceToAdd);
             return addedInvoice;
         }

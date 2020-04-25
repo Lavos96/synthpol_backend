@@ -21,8 +21,6 @@ namespace SyntPolApi.DAL.Configurations
                 .Property(i => i.Name)
                 .IsRequired();
 
-
-
             builder
                 .Property(i => i.Street)
                 .IsRequired();
@@ -40,10 +38,18 @@ namespace SyntPolApi.DAL.Configurations
                 .IsRequired();
 
             builder
+                .Property(i => i.Username)
+                .IsRequired();
+
+            builder
                 .HasOne(i => i.Order)
                 .WithOne(o => o.Invoice)
                 .HasForeignKey<Order>(o => o.InvoiceId);
-               
+
+            builder
+                .HasOne(i => i.InvoiceEdi)
+                .WithOne(ie => ie.Invoice)
+                .HasForeignKey<InvoiceEdi>(ie => ie.InvoiceId);
 
             builder.ToTable("Invoices");
         }

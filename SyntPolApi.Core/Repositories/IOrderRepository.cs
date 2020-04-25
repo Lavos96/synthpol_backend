@@ -16,6 +16,8 @@ namespace SyntPolApi.Core.Repositories
         Task<IEnumerable<Order>> GetOrdersWithProducts();
         Task<IEnumerable<Order>> GetAllOrdersWithProducts();
 
+        Task<IEnumerable<Order>> GetAllOrdersWithProductsByUsername(string username);
+
         ValueTask<Order> GetWithProductsAsync(int id);
         ValueTask<Order> GetFromAllOrdersWithProductsAsync(int id);
 

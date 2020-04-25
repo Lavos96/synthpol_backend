@@ -22,23 +22,18 @@ namespace SyntPolApi.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Invoices",
+                name: "InvoicesEdi",
                 columns: table => new
                 {
-                    InvoiceId = table.Column<int>(nullable: false)
+                    InvoiceEdiId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IssueDate = table.Column<DateTime>(nullable: false),
-                    DeliveryDate = table.Column<DateTime>(nullable: false),
-                    NIP = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    City = table.Column<string>(nullable: false),
-                    Street = table.Column<string>(nullable: false),
-                    ZipCode = table.Column<string>(nullable: false),
-                    OrderId = table.Column<int>(nullable: false)
+                    EdiString = table.Column<string>(nullable: false),
+                    Username = table.Column<string>(nullable: false),
+                    InvoiceId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Invoices", x => x.InvoiceId);
+                    table.PrimaryKey("PK_InvoicesEdi", x => x.InvoiceEdiId);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,25 +58,30 @@ namespace SyntPolApi.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "Invoices",
                 columns: table => new
                 {
-                    OrderId = table.Column<int>(nullable: false)
+                    InvoiceId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SellDate = table.Column<DateTime>(nullable: false),
-                    InvoiceId = table.Column<int>(nullable: true),
-                    OrderValue = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    OrderState = table.Column<int>(nullable: false),
-                    ShallDisplay = table.Column<bool>(nullable: false)
+                    IssueDate = table.Column<DateTime>(nullable: false),
+                    DeliveryDate = table.Column<DateTime>(nullable: false),
+                    NIP = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    City = table.Column<string>(nullable: false),
+                    Street = table.Column<string>(nullable: false),
+                    ZipCode = table.Column<string>(nullable: false),
+                    Username = table.Column<string>(nullable: false),
+                    OrderId = table.Column<int>(nullable: false),
+                    InvoiceEdiId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.PrimaryKey("PK_Invoices", x => x.InvoiceId);
                     table.ForeignKey(
-                        name: "FK_Orders_Invoices_InvoiceId",
-                        column: x => x.InvoiceId,
-                        principalTable: "Invoices",
-                        principalColumn: "InvoiceId",
+                        name: "FK_Invoices_InvoicesEdi_InvoiceEdiId",
+                        column: x => x.InvoiceEdiId,
+                        principalTable: "InvoicesEdi",
+                        principalColumn: "InvoiceEdiId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -118,6 +118,30 @@ namespace SyntPolApi.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SellDate = table.Column<DateTime>(nullable: false),
+                    InvoiceId = table.Column<int>(nullable: true),
+                    OrderValue = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    OrderState = table.Column<int>(nullable: false),
+                    ShallDisplay = table.Column<bool>(nullable: false),
+                    Username = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_Invoices_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoices",
+                        principalColumn: "InvoiceId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderItems",
                 columns: table => new
                 {
@@ -145,6 +169,13 @@ namespace SyntPolApi.DAL.Migrations
                         principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_InvoiceEdiId",
+                table: "Invoices",
+                column: "InvoiceEdiId",
+                unique: true,
+                filter: "[InvoiceEdiId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
@@ -193,6 +224,9 @@ namespace SyntPolApi.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Providers");
+
+            migrationBuilder.DropTable(
+                name: "InvoicesEdi");
         }
     }
 }

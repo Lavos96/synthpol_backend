@@ -55,6 +55,7 @@ namespace SyntPolApi
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IOrderItemService, OrderItemService>();
             services.AddTransient<IInvoiceService, InvoiceService>();
+            services.AddTransient<IInvoiceEdiService, InvoiceEdiService>();
 
             services.AddSwaggerGen(options =>
             {

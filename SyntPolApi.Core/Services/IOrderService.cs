@@ -24,5 +24,7 @@ namespace SyntPolApi.Core.Services
         Task<IEnumerable<Order>> GetAllOrdersWithProductsAsync();
         ValueTask<Order> GetWithProductsAsync(int id);
         ValueTask<Order> GetFromAllOrdersWithProductsAsync(int id);
+
+        Task<IEnumerable<Order>> GetAllOrdersWithProductsByUsername(string username);
     }
 }

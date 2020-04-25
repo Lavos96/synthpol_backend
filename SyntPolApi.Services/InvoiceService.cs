@@ -46,8 +46,19 @@ namespace SyntPolApi.Services
             invoiceToBeUpdated.NIP = invoice.NIP;
             invoiceToBeUpdated.Street = invoice.Street;
             invoiceToBeUpdated.ZipCode = invoice.ZipCode;
+            invoiceToBeUpdated.Username = invoice.Username;
 
             await unitOfWork.CommitAsync();
+        }
+
+        public async ValueTask<Invoice> GetWithProductsAsync(int id)
+        {
+            return await unitOfWork.Invoices.GetWithProductsAsync(id);
+        }
+
+        public async Task<IEnumerable<Invoice>> GetWithProductsByUsernameAsync(string username)
+        {
+            return await unitOfWork.Invoices.GetWithProductsByUsernameAsync(username);
         }
     }
 }

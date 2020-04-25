@@ -53,6 +53,14 @@ namespace SyntPolApi.DAL.Repositories
                 .FirstOrDefaultAsync(o => o.OrderId == id);
         }
 
+        public async Task<IEnumerable<Order>> GetAllOrdersWithProductsByUsername(string username)
+        {
+            return await syntPolApiDbContext.Orders
+                .Where(o => o.Username == username)
+                .Include(o => o.OrderItems)
+                .ThenInclude(o => o.Product)
+                .ToListAsync();
+        }
 
         public async Task<IEnumerable<Order>> GetAsync()
         {
@@ -74,5 +82,7 @@ namespace SyntPolApi.DAL.Repositories
             order.ShallDisplay = false;
             await syntPolApiDbContext.SaveChangesAsync();
         }
+
+        
     }
 }

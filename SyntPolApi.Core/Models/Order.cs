@@ -14,6 +14,8 @@ namespace SyntPolApi.Core.Models
         public decimal OrderValue { get; set; }
         public OrderState OrderState { get; set; }
         public bool ShallDisplay { get; set; }
+        public string Username { get; set; }
+        
         public ICollection<OrderItem> OrderItems { get; set; }
     }
 

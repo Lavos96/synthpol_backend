@@ -14,6 +14,7 @@ namespace SyntPolApi.Core
         IOrderRepository Orders { get; }
         IOrderItemRepository OrderItems { get; }
         IInvoiceRepository Invoices { get; }
+        IInvoiceEdiRepository InvoicesEdi { get; }
         Task<int> CommitAsync();
     }
 }

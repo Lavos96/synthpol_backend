@@ -16,8 +16,11 @@ namespace SyntPolApi.Core.Models
         public string Street { get; set; }
         public string ZipCode { get; set; }
 
+        public string Username { get; set; }
+
         public int OrderId { get; set; }
         public Order Order { get; set; }
-
+        public int? InvoiceEdiId { get; set; }
+        public InvoiceEdi InvoiceEdi { get; set; }
     }
 }

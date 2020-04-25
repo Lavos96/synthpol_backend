@@ -8,8 +8,8 @@ namespace SyntPolApi.Core.DTOs
     {
         public int OrderItemId { get; set; }
         public int Amount { get; set; }
-        public decimal Discount { get; set; }
         public decimal BruttoPrice { get; set; }
+        public decimal NettoPrice { get; set; }
 
         public int ProductId { get; set; }
         public GetProductForOrderDTO Product { get; set; }

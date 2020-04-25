@@ -13,6 +13,7 @@ using SyntPolApi.DAL;
 
 namespace SyntPolApi.Controllers
 {
+    //TODO: invoiceController put
     [Route("api/[controller]")]
     [ApiController]
     public class InvoicesController : ControllerBase
@@ -42,9 +43,9 @@ namespace SyntPolApi.Controllers
 
         // GET: api/Invoices/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Invoice>> GetInvoiceFromAll(int id)
+        public async Task<ActionResult<Invoice>> GetInvoiceWithDetailsFromAll(int id)
         {
-            var invoice = await invoiceService.GetFromAllByIdAsync(id);
+            var invoice = await invoiceService.GetWithProductsAsync(id);
             if (invoice == null)
             {
                 return NotFound();
@@ -54,24 +55,18 @@ namespace SyntPolApi.Controllers
             return Ok(mappedInvoice);
         }
 
-        // DELETE: api/Invoices/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Invoice>> DeleteInvoice(int id)
+        // GET: api/Invoices/5
+        [HttpGet("user/{username}")]
+        public async Task<ActionResult<Invoice>> GetInvoiceWithDetailsFromAll(string username)
         {
-            if (id == 0)
-            {
-                return BadRequest();
-            }
-
-            var invoiceToBeDeleted = await invoiceService.GetFromAllByIdAsync(id);
-
-            if (invoiceToBeDeleted == null)
+            var invoices = await invoiceService.GetWithProductsByUsernameAsync(username);
+            if (invoices == null)
             {
                 return NotFound();
             }
-            await invoiceService.DeleteInvoice(id);
 
-            return NoContent();
+            var mappedInvoices = mapper.Map<IEnumerable<Invoice>, IEnumerable<GetInvoiceDTO>>(invoices);
+            return Ok(mappedInvoices);
         }
     }
 }

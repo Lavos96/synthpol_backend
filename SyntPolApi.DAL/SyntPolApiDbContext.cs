@@ -20,6 +20,7 @@ namespace SyntPolApi.DAL
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Provider> Providers { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<InvoiceEdi> InvoicesEdi { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -29,6 +30,7 @@ namespace SyntPolApi.DAL
             builder.ApplyConfiguration(new OrderConfiguration());
             builder.ApplyConfiguration(new OrderItemConfiguration());
             builder.ApplyConfiguration(new InvoiceConfiguration());
+            builder.ApplyConfiguration(new InvoiceEdiConfiguration());
         }
     }
 }

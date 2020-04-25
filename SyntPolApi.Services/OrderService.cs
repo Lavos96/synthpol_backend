@@ -60,6 +60,11 @@ namespace SyntPolApi.Services
             return await unitOfWork.Orders.GetFromAllOrdersWithProductsAsync(id);
         }
 
+        public async Task<IEnumerable<Order>> GetAllOrdersWithProductsByUsername(string username)
+        {
+            return await unitOfWork.Orders.GetAllOrdersWithProductsByUsername(username);
+        }
+
         public async Task<IEnumerable<Order>> GetOrdersWithProductsAsync()
         {
             return await unitOfWork.Orders.GetOrdersWithProducts();
@@ -75,6 +80,7 @@ namespace SyntPolApi.Services
             orderToBeUpdated.OrderState = order.OrderState;
             orderToBeUpdated.OrderValue = order.OrderValue;
             orderToBeUpdated.ShallDisplay = order.ShallDisplay;
+            orderToBeUpdated.Username = order.Username;
 
             await unitOfWork.CommitAsync();
         }

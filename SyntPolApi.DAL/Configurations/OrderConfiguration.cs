@@ -23,6 +23,10 @@ namespace SyntPolApi.DAL.Configurations
                 .IsRequired();
 
             builder
+                .Property(o => o.Username)
+                .IsRequired();
+
+            builder
                 .HasMany(o => o.OrderItems)
                 .WithOne(or => or.Order)
                 .HasForeignKey(o => o.OrderId);

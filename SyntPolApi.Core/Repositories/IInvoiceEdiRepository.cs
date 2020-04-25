@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace SyntPolApi.Core.Repositories
 {
-    public interface IInvoiceRepository : IRepository<Invoice>
+    public interface IInvoiceEdiRepository : IRepository<InvoiceEdi>
     {
-        ValueTask<Invoice> GetWithProductsAsync(int id);
-        Task<IEnumerable<Invoice>> GetWithProductsByUsernameAsync(string username);
         Task Remove(int id);
     }
 }
