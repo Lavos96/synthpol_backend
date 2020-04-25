@@ -149,6 +149,7 @@ namespace SyntPolApi.Controllers
 
             var placedOrder = await orderService.CreateOrder(orderToAdd);
 
+            var orderItems = new List<OrderItem>();
             foreach (var product in products)
             {
                 var orderItem = new OrderItem
@@ -166,6 +167,7 @@ namespace SyntPolApi.Controllers
                     }
                 }
                 await orderItemService.CreateOrderItem(orderItem);
+                orderItems.Add(orderItem);
             }
 
             EdiParser ediParser = new EdiParser();
@@ -175,7 +177,7 @@ namespace SyntPolApi.Controllers
             {
                 Username = invoice.Username,
                 InvoiceId = invoice.InvoiceId,
-                //EdiString = ediParser.Save(invoice.InvoiceId, invoice.IssueDate, invoice.DeliveryDate, SynthPolInfo.supplierName, SynthPolInfo.supplierStreet, SynthPolInfo.supplierZipCode, SynthPolInfo.supplierCity, SynthPolInfo.supplierNIP, invoice.Name, invoice.Street, invoice.ZipCode, invoice.City, invoice.NIP);
+                EdiString = ediParser.Save(invoice.InvoiceId.ToString(), invoice.IssueDate.ToString(), invoice.DeliveryDate.ToString(), SynthPolInfo.supplierName, SynthPolInfo.supplierStreet, SynthPolInfo.supplierZipCode, SynthPolInfo.supplierCity, SynthPolInfo.supplierNIP, invoice.Name, invoice.Street, invoice.ZipCode, invoice.City, invoice.NIP, orderItems)
             };
 
             var invoiceEdi = await invoiceEdiService.CreateInvoiceEdi(invoiceEdiToAdd);

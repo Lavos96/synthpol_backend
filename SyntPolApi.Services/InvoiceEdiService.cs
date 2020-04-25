@@ -40,6 +40,11 @@ namespace SyntPolApi.Services
             return await unitOfWork.InvoicesEdi.GetFromAllByIdAsync(id);
         }
 
+        public async ValueTask<string> GetByInvoiceId(int id)
+        {
+            return await unitOfWork.InvoicesEdi.GetByInvoiceId(id);
+        }
+
         public async Task UpdateInvoiceEdi(InvoiceEdi invoiceEdiToBeUpdated, InvoiceEdi invoiceEdi)
         {
             invoiceEdiToBeUpdated.EdiString = invoiceEdi.EdiString;

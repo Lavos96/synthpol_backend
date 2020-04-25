@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SyntPolApi.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,8 +14,8 @@ namespace SyntPolApi.Infrastructure
                            (String invoiceId, String issueDate, String deliveryDate, String supplierName,
                            String deliveryStreet, String supplierZipCode, String supplierCity, String supplierNIP,
                            String customerName, String customerStreet, String customerZipCode, String customerCity,
-                           String customerNIP, String VATrate, String lp, String produkt,
-                           String ilosc, String CNetto, String WNetto, String WBrutto)
+                           String customerNIP, List<OrderItem> orderItems)//String VATrate, String lp, String produkt,
+                           //String ilosc, String CNetto, String WNetto, String WBrutto)
 
         {
             issueDate = issueDate.Replace("-", "");
@@ -33,19 +34,32 @@ namespace SyntPolApi.Infrastructure
             invoiceInEDIFormat.AppendLine("NAD+BY+4012345500004::9++" + customerName + "::::: +ul. " + customerStreet + ":::+" + customerCity + "++" + customerZipCode + "+PL\'");
             invoiceInEDIFormat.AppendLine("NAD+DP+4012345500004::9++" + customerName + "::::: +ul. " + customerStreet + ":::+" + customerCity + "++" + customerZipCode + "+PL\'");
             invoiceInEDIFormat.AppendLine("RFF+VA:" + customerNIP + "'");
-            invoiceInEDIFormat.AppendLine("TAX+7+VAT+++:::" + VATrate + "+S\'");
+            //invoiceInEDIFormat.AppendLine("TAX+7+VAT+++:::" + VATrate + "+S\'");
+            invoiceInEDIFormat.AppendLine("TAX+7+VAT+++:::" + 18 + "+S\'");
             invoiceInEDIFormat.AppendLine("");
-            invoiceInEDIFormat.AppendLine("LIN+" + lp + "++4000862141404:EU\'");
-            invoiceInEDIFormat.AppendLine("PIA+1+" + produkt + ":GN\'");
-            invoiceInEDIFormat.AppendLine("QTY+47:" + ilosc + ":PR\'");
-            invoiceInEDIFormat.AppendLine("PRI+AAA:" + CNetto + "\'");
-            invoiceInEDIFormat.AppendLine("MOA+66:" + WNetto + ":PLN\'");
+            int lp = 1;
+            foreach(var item in orderItems)
+            {
+                invoiceInEDIFormat.AppendLine("LIN+" + lp + "++4000862141404:EU\'");
+                invoiceInEDIFormat.AppendLine("PIA+1+" + item.Product.Name + ":GN\'");
+                invoiceInEDIFormat.AppendLine("QTY+47:" + item.Amount + ":PR\'");
+                invoiceInEDIFormat.AppendLine("PRI+AAA:" + item.Product.NettoPrice + "\'");
+                invoiceInEDIFormat.AppendLine("MOA+66:" + item.BruttoPrice + ":PLN\'");
+                lp++;
+            }
+            //invoiceInEDIFormat.AppendLine("LIN+" + lp + "++4000862141404:EU\'");
+            //invoiceInEDIFormat.AppendLine("PIA+1+" + produkt + ":GN\'");
+            //invoiceInEDIFormat.AppendLine("QTY+47:" + ilosc + ":PR\'");
+            //invoiceInEDIFormat.AppendLine("PRI+AAA:" + CNetto + "\'");
+            //invoiceInEDIFormat.AppendLine("MOA+66:" + WNetto + ":PLN\'");
             invoiceInEDIFormat.AppendLine("");
             invoiceInEDIFormat.AppendLine("");
             invoiceInEDIFormat.AppendLine("UNS+S\'");
             invoiceInEDIFormat.AppendLine("CNT+2:" + lp + "\'");
-            invoiceInEDIFormat.AppendLine("MOA+77:" + WBrutto + "\'");
-            invoiceInEDIFormat.AppendLine("MOA+79:" + WNetto + "\'");
+            invoiceInEDIFormat.AppendLine("MOA+77:" + orderItems.Sum(oi => oi.BruttoPrice) + "\'");
+            invoiceInEDIFormat.AppendLine("MOA+79:" + orderItems.Sum(oi => oi.NettoPrice) + "\'");
+            //invoiceInEDIFormat.AppendLine("MOA+77:" + WBrutto + "\'");
+            //invoiceInEDIFormat.AppendLine("MOA+79:" + WNetto + "\'");
             invoiceInEDIFormat.AppendLine("MOA+124:\'");
             invoiceInEDIFormat.AppendLine("MOA+125:\'");
             invoiceInEDIFormat.AppendLine("UNT+52+1\'");

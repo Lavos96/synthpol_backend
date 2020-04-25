@@ -16,6 +16,12 @@ namespace SyntPolApi.DAL.Repositories
             syntPolApiDbContext = context;
         }
 
+        public async ValueTask<string> GetByInvoiceId(int id)
+        {
+            var invoiceEdi = await syntPolApiDbContext.InvoicesEdi.FirstOrDefaultAsync(ie => ie.InvoiceId == id);
+            return invoiceEdi.EdiString;
+        }
+
         public async Task Remove(int id)
         {
             var invoiceEdi = await syntPolApiDbContext.InvoicesEdi.FirstOrDefaultAsync(ie => ie.InvoiceEdiId == id);
