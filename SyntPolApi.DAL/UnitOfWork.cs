@@ -14,6 +14,10 @@ namespace SyntPolApi.DAL
         private ProductRepository productRepository;
         private CategoryRepository categoryRepository;
         private ProviderRepository providerRepository;
+        private OrderRepository orderRepository;
+        private OrderItemRepository orderItemRepository;
+        private InvoiceRepository invoiceRepository;
+        private InvoiceEdiRepository invoiceEdiRepository;
 
         public UnitOfWork(SyntPolApiDbContext context)
         {
@@ -25,6 +29,11 @@ namespace SyntPolApi.DAL
         public IProviderRepository Providers => providerRepository = providerRepository ?? new ProviderRepository(context);
 
         public ICategoryRepository Categories => categoryRepository = categoryRepository ?? new CategoryRepository(context);
+
+        public IOrderRepository Orders => orderRepository = orderRepository ?? new OrderRepository(context);
+        public IOrderItemRepository OrderItems => orderItemRepository = orderItemRepository ?? new OrderItemRepository(context);
+        public IInvoiceRepository Invoices => invoiceRepository = invoiceRepository ?? new InvoiceRepository(context);
+        public IInvoiceEdiRepository InvoicesEdi => invoiceEdiRepository = invoiceEdiRepository ?? new InvoiceEdiRepository(context);
 
         public async Task<int> CommitAsync()
         {

@@ -18,6 +18,5 @@ namespace SyntPolApi.Core.Models
         public bool ShallDisplay { get; set; }
 
         public ICollection<Product> Products { get; set; }
-
     }
 }

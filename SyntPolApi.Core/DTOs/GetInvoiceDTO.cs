@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SyntPolApi.Core.Models
+namespace SyntPolApi.Core.DTOs
 {
-    public class Invoice
+    public class GetInvoiceDTO
     {
         public int InvoiceId { get; set; }
         public DateTime IssueDate { get; set; }
@@ -18,9 +18,6 @@ namespace SyntPolApi.Core.Models
 
         public string Username { get; set; }
 
-        public int OrderId { get; set; }
-        public Order Order { get; set; }
-        public int? InvoiceEdiId { get; set; }
-        public InvoiceEdi InvoiceEdi { get; set; }
+        public GetOrderDTO Order { get; set; }
     }
 }

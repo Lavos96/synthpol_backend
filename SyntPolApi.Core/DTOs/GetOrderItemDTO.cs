@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SyntPolApi.Core.Models
+namespace SyntPolApi.Core.DTOs
 {
-    public class OrderItem
+    public class GetOrderItemDTO
     {
         public int OrderItemId { get; set; }
         public int Amount { get; set; }
@@ -12,8 +12,6 @@ namespace SyntPolApi.Core.Models
         public decimal NettoPrice { get; set; }
 
         public int ProductId { get; set; }
-        public Product Product { get; set; }
-        public int OrderId { get; set; }
-        public Order Order { get; set; }
+        public GetProductForOrderDTO Product { get; set; }
     }
 }

@@ -45,13 +45,17 @@ namespace SyntPolApi
                 builder =>
                 {
                     //dodajemy zeby apka mogla sie komunkowac z frontem
-                    builder.WithOrigins("http://localhost:4200");
+                    builder.WithOrigins("http://localhost:4200").AllowAnyHeader();
                 });
             });
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IProviderService, ProviderService>();
+            services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<IOrderItemService, OrderItemService>();
+            services.AddTransient<IInvoiceService, InvoiceService>();
+            services.AddTransient<IInvoiceEdiService, InvoiceEdiService>();
 
             services.AddSwaggerGen(options =>
             {

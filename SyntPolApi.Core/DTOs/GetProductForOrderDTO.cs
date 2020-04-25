@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace SyntPolApi.Core.Models
+namespace SyntPolApi.Core.DTOs
 {
-    public class Product
+    public class GetProductForOrderDTO
     {
         public int ProductId { get; set; }
         public string Name { get; set; }
@@ -15,12 +14,5 @@ namespace SyntPolApi.Core.Models
         public string PhotoString { get; set; }
         public bool ShallDisplay { get; set; }
 
-        public int ProviderId { get; set; }
-        public Provider Provider { get; set; }
-        [NotMapped]
-        public ICollection<OrderItem> OrderItems { get; set; }
-
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
     }
 }

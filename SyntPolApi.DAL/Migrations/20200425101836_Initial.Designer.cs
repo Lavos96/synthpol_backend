@@ -10,7 +10,7 @@ using SyntPolApi.DAL;
 namespace SyntPolApi.DAL.Migrations
 {
     [DbContext(typeof(SyntPolApiDbContext))]
-    [Migration("20200320105407_Initial")]
+    [Migration("20200425101836_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,41 +47,78 @@ namespace SyntPolApi.DAL.Migrations
                     b.Property<int>("InvoiceId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("DeliveryDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("HomeNumber")
-                        .HasColumnType("int");
-
-                    b.Property<int>("InvoiceNumber")
+                    b.Property<int?>("InvoiceEdiId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("IssueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("NIP")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NIP")
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ZipCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("InvoiceId");
 
+                    b.HasIndex("InvoiceEdiId")
+                        .IsUnique()
+                        .HasFilter("[InvoiceEdiId] IS NOT NULL");
+
                     b.ToTable("Invoices");
+                });
+
+            modelBuilder.Entity("SyntPolApi.Core.Models.InvoiceEdi", b =>
+                {
+                    b.Property<int>("InvoiceEdiId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("EdiString")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("InvoiceEdiId");
+
+                    b.ToTable("InvoicesEdi");
                 });
 
             modelBuilder.Entity("SyntPolApi.Core.Models.Order", b =>
@@ -89,19 +126,18 @@ namespace SyntPolApi.DAL.Migrations
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("InvoiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderNumber")
                         .HasColumnType("int");
 
                     b.Property<int>("OrderState")
                         .HasColumnType("int");
 
                     b.Property<decimal>("OrderValue")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("SellDate")
                         .HasColumnType("datetime2");
@@ -109,9 +145,15 @@ namespace SyntPolApi.DAL.Migrations
                     b.Property<bool>("ShallDisplay")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("OrderId");
 
-                    b.HasIndex("InvoiceId");
+                    b.HasIndex("InvoiceId")
+                        .IsUnique()
+                        .HasFilter("[InvoiceId] IS NOT NULL");
 
                     b.ToTable("Orders");
                 });
@@ -121,16 +163,18 @@ namespace SyntPolApi.DAL.Migrations
                     b.Property<int>("OrderItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
                     b.Property<decimal>("BruttoPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,2)");
 
-                    b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<decimal>("NettoPrice")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -238,11 +282,18 @@ namespace SyntPolApi.DAL.Migrations
                     b.ToTable("Providers");
                 });
 
+            modelBuilder.Entity("SyntPolApi.Core.Models.Invoice", b =>
+                {
+                    b.HasOne("SyntPolApi.Core.Models.InvoiceEdi", "InvoiceEdi")
+                        .WithOne("Invoice")
+                        .HasForeignKey("SyntPolApi.Core.Models.Invoice", "InvoiceEdiId");
+                });
+
             modelBuilder.Entity("SyntPolApi.Core.Models.Order", b =>
                 {
-                    b.HasOne("SyntPolApi.Core.Models.Invoice", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("InvoiceId");
+                    b.HasOne("SyntPolApi.Core.Models.Invoice", "Invoice")
+                        .WithOne("Order")
+                        .HasForeignKey("SyntPolApi.Core.Models.Order", "InvoiceId");
                 });
 
             modelBuilder.Entity("SyntPolApi.Core.Models.OrderItem", b =>
@@ -254,7 +305,7 @@ namespace SyntPolApi.DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("SyntPolApi.Core.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -15,6 +15,7 @@ namespace SyntPolApi.Mapping
             CreateMap<Product, GetProductDTO>();
             CreateMap<Provider, GetProviderDTO>();
             CreateMap<Category, GetCategoryDTO>();
+            CreateMap<Invoice, GetInvoiceDTO>();
 
             CreateMap<GetProductDTO, Product>();
             CreateMap<GetProviderDTO, Provider>();
@@ -27,6 +28,11 @@ namespace SyntPolApi.Mapping
             CreateMap<PostProductDTO, Product>();
             CreateMap<PostProviderDTO, Provider>();
             CreateMap<PostCategoryDTO, Category>();
+            CreateMap<PostInvoiceDTO, Invoice>();
+
+            CreateMap<OrderItem, GetOrderItemDTO>();
+            CreateMap<Product, GetProductForOrderDTO>();
+            CreateMap<Order, GetOrderDTO>();
         }
     }
 }
