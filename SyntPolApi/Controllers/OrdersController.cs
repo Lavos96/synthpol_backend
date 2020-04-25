@@ -10,6 +10,7 @@ using SyntPolApi.Core.DTOs;
 using SyntPolApi.Core.Models;
 using SyntPolApi.Core.Services;
 using SyntPolApi.DAL;
+using SyntPolApi.Infrastructure;
 
 namespace SyntPolApi.Controllers
 {
@@ -148,19 +149,6 @@ namespace SyntPolApi.Controllers
 
             var placedOrder = await orderService.CreateOrder(orderToAdd);
 
-            //tu zle 
-            //var placedOrder = await orderService.GetByIdAsync(orderToAdd.OrderId);
-
-            var invoice = await CreateInvoice(placedOrder.OrderId, order.Invoice);
-            var invoiceEdiToAdd = new InvoiceEdi
-            {
-                Username = invoice.Username,
-                InvoiceId = invoice.InvoiceId,
-                EdiString = "tutaj bedzie faktura w formacie edi"
-            };
-
-            var invoiceEdi = await invoiceEdiService.CreateInvoiceEdi(invoiceEdiToAdd);
-
             foreach (var product in products)
             {
                 var orderItem = new OrderItem
@@ -179,6 +167,18 @@ namespace SyntPolApi.Controllers
                 }
                 await orderItemService.CreateOrderItem(orderItem);
             }
+
+            EdiParser ediParser = new EdiParser();
+
+            var invoice = await CreateInvoice(placedOrder.OrderId, order.Invoice);
+            var invoiceEdiToAdd = new InvoiceEdi
+            {
+                Username = invoice.Username,
+                InvoiceId = invoice.InvoiceId,
+                //EdiString = ediParser.Save(invoice.InvoiceId, invoice.IssueDate, invoice.DeliveryDate, SynthPolInfo.supplierName, SynthPolInfo.supplierStreet, SynthPolInfo.supplierZipCode, SynthPolInfo.supplierCity, SynthPolInfo.supplierNIP, invoice.Name, invoice.Street, invoice.ZipCode, invoice.City, invoice.NIP);
+            };
+
+            var invoiceEdi = await invoiceEdiService.CreateInvoiceEdi(invoiceEdiToAdd);
 
             var newOrder = placedOrder;
             newOrder.InvoiceId = invoice.InvoiceId;
