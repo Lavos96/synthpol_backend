@@ -10,6 +10,7 @@ namespace SyntPolApi.Core.Repositories
     {
         ValueTask<Invoice> GetWithProductsAsync(int id);
         Task<IEnumerable<Invoice>> GetWithProductsByUsernameAsync(string username);
+        Task<IEnumerable<Invoice>> GetAllWithProductsAsync();
         Task Remove(int id);
     }
 }

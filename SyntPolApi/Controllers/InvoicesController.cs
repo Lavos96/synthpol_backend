@@ -13,7 +13,7 @@ using SyntPolApi.DAL;
 
 namespace SyntPolApi.Controllers
 {
-    //TODO: invoiceController put
+    //TODO: invoicesController put
     [Route("api/[controller]")]
     [ApiController]
     public class InvoicesController : ControllerBase
@@ -31,7 +31,7 @@ namespace SyntPolApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Invoice>>> getAllInvoices()
         {
-            var invoices = await invoiceService.GetAllAsync();
+            var invoices = await invoiceService.GetAllWithProductsAsync();
             if (invoices == null)
             {
                 return NotFound();
@@ -55,7 +55,7 @@ namespace SyntPolApi.Controllers
             return Ok(mappedInvoice);
         }
 
-        // GET: api/Invoices/5
+        // GET: api/Invoices/user/{username}
         [HttpGet("user/{username}")]
         public async Task<ActionResult<Invoice>> GetInvoiceWithDetailsFromAll(string username)
         {

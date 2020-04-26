@@ -18,6 +18,15 @@ namespace SyntPolApi.DAL.Repositories
             syntPolApiDbContext = context;
         }
 
+        public async Task<IEnumerable<Invoice>> GetAllWithProductsAsync()
+        {
+            return await syntPolApiDbContext.Invoices
+                .Include(i => i.Order)
+                .ThenInclude(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .ToListAsync();
+        }
+
         public async ValueTask<Invoice> GetWithProductsAsync(int id)
         {
             var invoice = await syntPolApiDbContext.Invoices
