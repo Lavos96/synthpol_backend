@@ -17,5 +17,6 @@ namespace SyntPolApi.Core.Services
         ValueTask<Invoice> GetWithProductsAsync(int id);
 
         Task<IEnumerable<Invoice>> GetWithProductsByUsernameAsync(string username);
+        Task<IEnumerable<Invoice>> GetAllWithProductsAsync();
     }
 }

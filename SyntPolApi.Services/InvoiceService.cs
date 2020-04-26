@@ -60,5 +60,10 @@ namespace SyntPolApi.Services
         {
             return await unitOfWork.Invoices.GetWithProductsByUsernameAsync(username);
         }
+
+        public async Task<IEnumerable<Invoice>> GetAllWithProductsAsync()
+        {
+            return await unitOfWork.Invoices.GetAllWithProductsAsync();
+        }
     }
 }
