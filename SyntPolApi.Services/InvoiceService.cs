@@ -41,12 +41,15 @@ namespace SyntPolApi.Services
 
         public async Task UpdateInvoice(Invoice invoiceToBeUpdated, Invoice invoice)
         {
+            invoiceToBeUpdated.IssueDate = invoice.IssueDate;
+            invoiceToBeUpdated.DeliveryDate = invoice.DeliveryDate;
             invoiceToBeUpdated.City = invoice.City;
             invoiceToBeUpdated.Name = invoice.Name;
             invoiceToBeUpdated.NIP = invoice.NIP;
             invoiceToBeUpdated.Street = invoice.Street;
             invoiceToBeUpdated.ZipCode = invoice.ZipCode;
             invoiceToBeUpdated.Username = invoice.Username;
+            invoiceToBeUpdated.ShallDisplay = invoice.ShallDisplay;
 
             await unitOfWork.CommitAsync();
         }
