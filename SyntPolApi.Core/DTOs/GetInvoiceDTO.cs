@@ -17,6 +17,7 @@ namespace SyntPolApi.Core.DTOs
         public string ZipCode { get; set; }
 
         public string Username { get; set; }
+        public bool ShallDisplay { get; set; }
 
         public GetOrderDTO Order { get; set; }
     }

@@ -51,10 +51,8 @@ namespace SyntPolApi.DAL.Repositories
         public async Task Remove(int id)
         {
             var invoice = await syntPolApiDbContext.Invoices.FirstOrDefaultAsync(i => i.InvoiceId == id);
-            syntPolApiDbContext.Invoices.Remove(invoice);
+            invoice.ShallDisplay = false;
             await syntPolApiDbContext.SaveChangesAsync();
         }
-
-
     }
 }

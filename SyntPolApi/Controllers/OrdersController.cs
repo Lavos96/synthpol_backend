@@ -222,6 +222,7 @@ namespace SyntPolApi.Controllers
             invoiceToAdd.DeliveryDate = DateTime.Now;
             invoiceToAdd.OrderId = orderId;
             invoiceToAdd.Username = invoice.Username;
+            invoiceToAdd.ShallDisplay = true;
             var addedInvoice = await invoiceService.CreateInvoice(invoiceToAdd);
             return addedInvoice;
         }

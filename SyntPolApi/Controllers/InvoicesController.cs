@@ -68,5 +68,49 @@ namespace SyntPolApi.Controllers
             var mappedInvoices = mapper.Map<IEnumerable<Invoice>, IEnumerable<GetInvoiceDTO>>(invoices);
             return Ok(mappedInvoices);
         }
+
+        // DELETE: api/invoices/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Invoice>> DeleteInvoice(int id)
+        {
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+
+            var invoiceToBeDeleted = await invoiceService.GetFromAllByIdAsync(id);
+
+            if (invoiceToBeDeleted == null)
+            {
+                return NotFound();
+            }
+            await invoiceService.DeleteInvoice(id);
+
+            return NoContent();
+        }
+
+        // PUT: api/invoices/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutInvoice(int id, [FromBody] UpdateInvoiceDTO invoice)
+        {
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+
+            var invoiceToBeUpdated = await invoiceService.GetFromAllByIdAsync(id);
+
+            if (invoiceToBeUpdated == null)
+            {
+                return NotFound();
+            }
+            var mappedInvoice = mapper.Map<UpdateInvoiceDTO, Invoice>(invoice);
+            await invoiceService.UpdateInvoice(invoiceToBeUpdated, mappedInvoice);
+
+            var newProduct = await invoiceService.GetFromAllByIdAsync(id);
+            return Ok(newProduct);
+        }
     }
 }
