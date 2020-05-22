@@ -9,6 +9,7 @@ namespace SyntPolApi.Core.Repositories
     public interface IInvoiceEdiRepository : IRepository<InvoiceEdi>
     {
         ValueTask<string> GetByInvoiceId(int id);
+        ValueTask<string> GetXmlByInvoiceId(int id);
         Task Remove(int id);
     }
 }

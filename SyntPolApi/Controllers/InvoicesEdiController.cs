@@ -31,5 +31,17 @@ namespace SyntPolApi.Controllers
 
             return Ok(invoiceEdi);
         }
+
+        [HttpGet("xml/{id}")]
+        public async Task<ActionResult<InvoiceEdi>> GetXmlInvoiceEdiByInvoiceId(int id)
+        {
+            var invoiceEdi = await invoiceEdiService.GetXmlByInvoiceId(id);
+            if (invoiceEdi == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(invoiceEdi);
+        }
     }
 }

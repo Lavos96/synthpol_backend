@@ -8,6 +8,7 @@ namespace SyntPolApi.Core.Models
     {
         public int InvoiceEdiId { get; set; }
         public string EdiString { get; set; }
+        public string XmlString { get; set; }
         public string Username { get; set; }
 
         public int InvoiceId { get; set; }

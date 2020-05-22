@@ -12,6 +12,7 @@ namespace SyntPolApi.Core.Services
         Task UpdateInvoiceEdi(InvoiceEdi invoiceEdiToBeUpdated, InvoiceEdi invoiceEdi);
         Task DeleteInvoiceEdi(int id);
         ValueTask<string> GetByInvoiceId(int id);
+        ValueTask<string> GetXmlByInvoiceId(int id);
 
 
         Task<IEnumerable<InvoiceEdi>> GetAllAsync();
