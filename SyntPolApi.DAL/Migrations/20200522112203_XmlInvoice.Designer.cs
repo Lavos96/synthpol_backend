@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SyntPolApi.DAL;
 
 namespace SyntPolApi.DAL.Migrations
 {
     [DbContext(typeof(SyntPolApiDbContext))]
-    partial class SyntPolApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200522112203_XmlInvoice")]
+    partial class XmlInvoice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

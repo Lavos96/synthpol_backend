@@ -34,6 +34,7 @@ namespace SyntPolApi.Mapping
             CreateMap<OrderItem, GetOrderItemDTO>();
             CreateMap<Product, GetProductForOrderDTO>();
             CreateMap<Order, GetOrderDTO>();
+            CreateMap<OrderItem, GetOrderItemForXml>();
         }
     }
 }

@@ -45,9 +45,15 @@ namespace SyntPolApi.Services
             return await unitOfWork.InvoicesEdi.GetByInvoiceId(id);
         }
 
+        public async ValueTask<string> GetXmlByInvoiceId(int id)
+        {
+            return await unitOfWork.InvoicesEdi.GetXmlByInvoiceId(id);
+        }
+
         public async Task UpdateInvoiceEdi(InvoiceEdi invoiceEdiToBeUpdated, InvoiceEdi invoiceEdi)
         {
             invoiceEdiToBeUpdated.EdiString = invoiceEdi.EdiString;
+            invoiceEdiToBeUpdated.XmlString = invoiceEdi.XmlString;
             invoiceEdiToBeUpdated.Username = invoiceEdi.Username;
 
             await unitOfWork.CommitAsync();

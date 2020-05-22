@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +14,7 @@ using SyntPolApi.Core.Models;
 using SyntPolApi.Core.Services;
 using SyntPolApi.DAL;
 using SyntPolApi.Infrastructure;
+using YAXLib;
 
 namespace SyntPolApi.Controllers
 {
@@ -171,13 +175,21 @@ namespace SyntPolApi.Controllers
             }
 
             EdiParser ediParser = new EdiParser();
-
+            var mappedOrderItems = mapper.Map<List<OrderItem>, List<GetOrderItemForXml>>(orderItems);
             var invoice = await CreateInvoice(placedOrder.OrderId, order.Invoice);
+            var invoiceXml = new XmlInvoice(invoice.InvoiceId, invoice.IssueDate, invoice.DeliveryDate,
+                SynthPolInfo.supplierName, SynthPolInfo.supplierStreet, SynthPolInfo.supplierCity, SynthPolInfo.supplierZipCode, SynthPolInfo.supplierNIP, 
+                invoice.Name, invoice.Street, invoice.ZipCode, invoice.City, invoice.NIP, mappedOrderItems);
+            YAXSerializer serializer = new YAXSerializer(typeof(XmlInvoice));
+            string xmlString = serializer.Serialize(invoiceXml);
             var invoiceEdiToAdd = new InvoiceEdi
             {
                 Username = invoice.Username,
                 InvoiceId = invoice.InvoiceId,
-                EdiString = ediParser.Save(invoice.InvoiceId.ToString(), invoice.IssueDate.ToString(), invoice.DeliveryDate.ToString(), SynthPolInfo.supplierName, SynthPolInfo.supplierStreet, SynthPolInfo.supplierZipCode, SynthPolInfo.supplierCity, SynthPolInfo.supplierNIP, invoice.Name, invoice.Street, invoice.ZipCode, invoice.City, invoice.NIP, orderItems)
+                EdiString = ediParser.Save(invoice.InvoiceId.ToString(), invoice.IssueDate.ToString(), invoice.DeliveryDate.ToString(),
+                    SynthPolInfo.supplierName, SynthPolInfo.supplierStreet, SynthPolInfo.supplierZipCode, SynthPolInfo.supplierCity,
+                    SynthPolInfo.supplierNIP, invoice.Name, invoice.Street, invoice.ZipCode, invoice.City, invoice.NIP, orderItems),
+                XmlString = xmlString
             };
 
             var invoiceEdi = await invoiceEdiService.CreateInvoiceEdi(invoiceEdiToAdd);
@@ -225,6 +237,15 @@ namespace SyntPolApi.Controllers
             invoiceToAdd.ShallDisplay = true;
             var addedInvoice = await invoiceService.CreateInvoice(invoiceToAdd);
             return addedInvoice;
+        }
+
+        string ToXml(object o)
+        {
+            XmlSerializer ser = new XmlSerializer(o.GetType());
+            StringBuilder sb = new StringBuilder();
+            using (StringWriter sw = new StringWriter(sb))
+                ser.Serialize(sw, o);
+            return sb.ToString();
         }
     }
 }
